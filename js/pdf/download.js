@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════════════
    pdf/download.js
-   Master PDF report generator - 10-page A4 with template-faithful layout, AI prose integration, dynamic footers.
+   Master PDF report generator — 10-page A4 with template-faithful layout, AI prose integration, dynamic footers.
 ════════════════════════════════════════════════════════════════════ */
 
 import { S } from '../state.js';
@@ -8,7 +8,7 @@ import { NMAP_DIMS } from '../engine/nmap.js';
 
 async function downloadPDF() {
   /* ════════════════════════════════════════════════════════════════════
-     NuMind MAPS - Template-faithful 10-page A4 report
+     NuMind MAPS — Template-faithful 10-page A4 report
      Mirrors numind_maps_jspdf_template-1.jsx, wired to live S + AI data
   ════════════════════════════════════════════════════════════════════ */
   const btn = document.getElementById('pdf-download-btn');
@@ -27,9 +27,6 @@ async function downloadPDF() {
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-    // ── NuMind Logo (base64) ──────────────────────────────────────
-    const NUMIND_LOGO_B64 = '/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAEnAnwDASIAAhEBAxEB/8QAHQABAAEFAQEBAAAAAAAAAAAAAAcEBQYICQIDAf/EAFsQAAEDAwEEBQULBwYKCAcBAAEAAgMEBQYRBxIhMQgTQVFhFCJxdYEJFTI3OHSRobKztBYjNkJScrEkMzVTYsE5ZHaChJKiwtHhFyhDRGVzk/AlJjRVg8Pj8f/EABwBAQABBQEBAAAAAAAAAAAAAAAFAgMEBgcBCP/EADcRAQACAQIEAwUGBQQDAAAAAAABAgMEEQUhMUESUXEGE2Gx0SKBkaHB8BQkMkLhIzNi8SVykv/aAAwDAQACEQMRAD8A3LREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERARU9zraW22+evrpmwU0DC+SR3JoC1k2obVb1k1TLQ2maW3WgEtDI3bsk473kcdD+yOHHjqreTJFI5pbhXB8/Er7Y+VY6zPSPrKf75nmHWWR0dxyGiikadHRseZHg+LWAlWum2tbPKiURx5JEHHhrJTzMH0uYAtShC7t1K9tpz3LGnVW8m509i9HFft5LTP3R+W0/Nux7/AFk96Bd/fai97zwFT1zer17t7XTVY5U7Vtn9PKY5MiiJB01ZTyvH0tYQoodGW9GaJn/iX++VFPVa8N0LY+HaDHqsXvLzMejmXFrTotXfBTnFZmN5+EtwbJm+JXp7WW2/0U0jjoI3P3Hn/NdoVkK0gbHpyUmbM9qF2x6eKhvE0tfaiQ0753pIB3tPMjwPs0Veo4T4Y3xTv8GJi1sWna8Nk0XxoaqnrqOGspJWzQTMD43tPBwPIr7KG6M8REQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQERUV8utBZbbLcblUNgp4+bjzJ7AB2lJnZVWtrzFaxvMob6S2RyukpcWpZHNZuioq906b37DT9BOn7qhNsHeD9CzHP7tDkWW112gbI2GZw6psg84NDQBrp6F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REQEREBERAREQEREBERAREQEREFNdaKK422poZ/5ueJ0bjpxGo01HitaMgtNdY7lLQXCF8cjHHdcR5r29jmntC2gVPX0VHX07qeupYamF3NkrA4fWszSav8Ah5neN4lNcH4xbh1pia+Ks/vk1Za8ac16Enism2k4TV41XPqqWN81qkdrHIBr1Wp+A7u8D2+lYaHEFbLitTLXxV6OkabNi1WKMuKd4lXtk8V7Eg7wqBr16Ei9nGuziTRhx12YQHvq3fxK/CvODknZXTH/ABt/8SvRUVTrePjL5d9v+XG8v77y8kBeSzgvaKtpj5Fh7l9aGhnralsEEZLnHiexo7yrtYbRLXzCSRpbTNPnO/a8As0ghigZuQxMjb3NboFi59VGP7Mc5bLwf2eya2sZcs+Gn5z6fV5pIGU1NHBGPNjaGj2L6oiiZ5ukVrFYiI6QIiI9EREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQeZoo5onRTRskjeNHNcNQR3ELBL/sqxu4zPnpDNbZHcSISDHr+6eXoBAWeoruLNkxTvSdmTptbn0tvFhvNUR/8AQsN79JDp3eRf/wBFfrBspx23TMnrHz3GRuh0lIbHr+6OfoJKz5Ffvr9ReNpszsvHuIZa+G2WdvhtHyiHzZTwMpxTshjbCBuiMNAaB3aK0VmN0Mzi+Jz4CexvFv0K9osauS1J3rLXtVosGrjbPSLfvz6sZ/JQa/8A1/D/AMn/AJqtoscoIHh8u/O4dj/g/QryiuW1OW0bTLCxcB4fit4q4o3+O8/OZfjWta0NaA1o4AAcAv1EVhLxGwiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiD//2Q==';
 
     // ── Palette (matches template) ────────────────────────────────
     const PURPLE       = '#5B2D8E';
@@ -270,27 +267,26 @@ async function downloadPDF() {
     const footer = function () { /* no-op: footers are stamped at save time */ };
 
     const sectionHeader = (title, subtitle) => {
-      rect(0, 0, W, 20, PURPLE);
-      try { doc.addImage('data:image/jpeg;base64,' + NUMIND_LOGO_B64, 'JPEG', W - 46, 2, 40, 16); } catch(e) {}
-      txt(title, 14, 10, { size: 13, color: WHITE, bold: true });
+      rect(0, 0, W, 18, PURPLE);
+      txt(title, 14, 11, { size: 14, color: WHITE, bold: true });
       if (subtitle) {
-        const subLines = doc.splitTextToSize(subtitle, W - 60);
-        txt(subLines.slice(0, 2).join(' '), 14, 16, { size: 6.5, color: '#D8B4FE', maxWidth: W - 60 });
+        const subLines = doc.splitTextToSize(subtitle, W - 28);
+        txt(subLines[0], 14, 16, { size: 7, color: '#D8B4FE' });
       }
     };
 
     const studentBar = (y) => {
-      y = y || 24;
+      y = y || 22;
       rect(10, y, W - 20, 8, LIGHT_GRAY, null, 1);
       doc.setFontSize(8); doc.setFont('helvetica', 'bold'); setTxtColor(PURPLE);
       doc.text(studentName, 14, y + 5.5);
       const nameW = doc.getTextWidth(studentName);
-      const meta = '  |  ' + (grade || '-') + ' | ' + (schoolName || '-') + ' | ' + dateStr;
-      txt(meta, 14 + nameW, y + 5.5, { size: 8, color: GRAY, maxWidth: W - 28 - nameW });
+      const meta = '  |  ' + (grade || '—') + ' · ' + (schoolName || '—') + ' · ' + dateStr;
+      txt(meta, 14 + nameW, y + 5.5, { size: 8, color: GRAY });
     };
 
     const stanineBar = (label, value, y, colorHex) => {
-      txt(label, 14, y, { size: 7, color: '#1F2937', maxWidth: 52 });
+      txt(label, 67, y, { size: 7, color: '#1F2937', align: 'right' });
       const barX = 70, barW = W - barX - 20;
       rect(barX, y - 3.5, barW, 5, '#E5E7EB', null, 1);
       rect(barX, y - 3.5, (value / 9) * barW, 5, colorHex, null, 1);
@@ -298,13 +294,13 @@ async function downloadPDF() {
     };
 
     /* ═══════════════════════════════════════════════
-       PAGE 1 - COVER
+       PAGE 1 — COVER
     ═══════════════════════════════════════════════ */
     rect(0, 0, W, H, PURPLE_DARK);
     rect(0, 0, W, 80, PURPLE);
-    // NuMind logo image on cover (top-left)
-    try { doc.addImage('data:image/jpeg;base64,' + NUMIND_LOGO_B64, 'JPEG', 10, 6, 54, 22); } catch(e) {}
-    
+    rect(14, 12, 40, 14, PURPLE_LIGHT, null, 2);
+    txt('NuMind™', 22, 21, { size: 12, color: WHITE, bold: true });
+    txt('NURTURING MINDS, ACHIEVING OUTCOMES', 14, 30, { size: 5, color: '#D8B4FE' });
     txt('Comprehensive Multidimensional Assessment Report', 14, 50, { size: 9, color: '#D8B4FE' });
     txt('NuMind MAPS', 14, 68, { size: 28, color: WHITE, bold: true });
     txt('Multidimensional Assessment', 14, 80, { size: 14, color: '#C4B5FD' });
@@ -316,9 +312,9 @@ async function downloadPDF() {
     txt(studentName, 22, 126, { size: 18, color: '#1F2937', bold: true });
     line(22, 130, W - 22, 130, '#E5E7EB', 0.3);
     txt('Grade:', 22, 140, { size: 9, color: '#1F2937', bold: true });
-    txt(grade || '-', 38, 140, { size: 9, color: '#1F2937' });
+    txt(grade || '—', 38, 140, { size: 9, color: '#1F2937' });
     txt('School:', 22, 148, { size: 9, color: '#1F2937', bold: true });
-    txt(schoolName || '-', 38, 148, { size: 9, color: '#1F2937', maxWidth: W - 60 });
+    txt(schoolName || '—', 38, 148, { size: 9, color: '#1F2937', maxWidth: W - 60 });
     txt('Date:', 22, 156, { size: 9, color: '#1F2937', bold: true });
     txt(dateStr, 35, 156, { size: 9, color: '#1F2937' });
 
@@ -336,15 +332,14 @@ async function downloadPDF() {
     footer(1);
 
     /* ═══════════════════════════════════════════════
-       PAGE 2 - WELCOME & 4 PILLARS
+       PAGE 2 — WELCOME & 4 PILLARS
     ═══════════════════════════════════════════════ */
     doc.addPage();
-    rect(0, 0, W, 20, PURPLE);
-    try { doc.addImage('data:image/jpeg;base64,' + NUMIND_LOGO_B64, 'JPEG', W - 46, 2, 40, 16); } catch(e) {}
+    rect(0, 0, W, 18, PURPLE);
     txt('Welcome', 14, 9, { size: 8, color: '#D8B4FE' });
-    txt(studentName, 14, 16, { size: 14, color: WHITE, bold: true });
+    txt(studentName, 14, 15, { size: 14, color: WHITE, bold: true });
 
-    let cy = 26;
+    let cy = 28;
     // Use AI holistic_summary when present — this is the personalised
     // mentor narrative weaving all four modules into the student's story.
     // Falls back to the generic welcome blurb when no AI report is available.
@@ -354,29 +349,28 @@ async function downloadPDF() {
     const welcomeProse = aiText('holistic_summary', welcomeFallback);
     cy = drawProse(welcomeProse, cy, {
       size: 8.5, color: '#374151', lineH: 5, paraGap: 4,
-      maxW: W - 28, x: 14, bottom: H - 60,
+      maxW: W - 28, x: 14, bottom: cy + 70,
       onNewPage: function () {
-        rect(0, 0, W, 20, PURPLE);
+        rect(0, 0, W, 18, PURPLE);
         txt('Welcome (continued)', 14, 9, { size: 8, color: '#D8B4FE' });
-        txt(studentName, 14, 16, { size: 14, color: WHITE, bold: true });
+        txt(studentName, 14, 15, { size: 14, color: WHITE, bold: true });
       },
     });
     cy += 2;
 
     rect(10, cy, W - 20, 8, PURPLE, null, 2);
-    txt('The Four Pillars of NuMind MAP', W / 2, cy + 5.5, { size: 9, color: WHITE, bold: true, align: 'center' });
+    txt('\u2726 The Four Pillars of NuMind MAP \u2726', W / 2, cy + 5.5, { size: 9, color: WHITE, bold: true, align: 'center' });
     cy += 12;
 
+    rect(10, cy, W - 20, 10, '#F5F3FF', '#E9D5FF', 2);
     const infoTxt = 'Each assessment plays a distinct role in shaping your Integrated Career Development Profile, helping you make informed and confident decisions about your future.';
     const infoL = doc.splitTextToSize(infoTxt, W - 30);
-    const infoH = 6 + infoL.length * 5;
-    rect(10, cy, W - 20, infoH, '#F5F3FF', '#E9D5FF', 2);
-    infoL.forEach((ln, i) => txt(ln, 14, cy + 5 + i * 5, { size: 8, color: '#374151' }));
-    cy += infoH + 4;
+    txt(infoL.join('\n'), 14, cy + 5, { size: 8, color: '#374151' });
+    cy += 14;
 
     const pillarData = [
       { code:'NMAP',  title:'NuMind Multidimensional Assessment of Personality', sub:'Understanding who you are at your core', body:'Evaluates 9 key personality dimensions that influence how you think, behave, and grow.', border:PURPLE },
-      { code:'NAAB',  title:'NuMind Aptitude & Ability Battery',                 sub:'Discovering what you can do',            body:'Measures 8 essential cognitive abilities - verbal, numerical, spatial, abstract reasoning and more.', border:PURPLE_LIGHT },
+      { code:'NAAB',  title:'NuMind Aptitude & Ability Battery',                 sub:'Discovering what you can do',            body:'Measures 8 essential cognitive abilities — verbal, numerical, spatial, abstract reasoning and more.', border:PURPLE_LIGHT },
       { code:'NCPI',  title:'NuMind Career Preference Inventory',                sub:'Identifying what you enjoy',             body:'Maps career interests across 10 domains to uncover environments and roles aligned with your preferences.', border:TEAL },
       { code:'NSEAA', title:'NuMind Social Emotional & Academic Adjustment',     sub:'Preparing you to thrive',                body:'Assesses emotional, social, and academic readiness ensuring long-term success and wellbeing.', border:YELLOW },
     ];
@@ -389,7 +383,6 @@ async function downloadPDF() {
       txt(p.title, px + 5, py + 12, { size: 7.5, color: '#1F2937', bold: true, maxWidth: 83 });
       doc.setFont('helvetica', 'italic'); doc.setFontSize(7); setTxtColor(p.border);
       const sub = doc.splitTextToSize(p.sub, 83); doc.text(sub, px + 5, py + 18);
-      doc.setFont('helvetica', 'normal');
       const body = doc.splitTextToSize(p.body, 83);
       txt(body.join('\n'), px + 5, py + 22, { size: 6.5, color: '#6B7280' });
     });
@@ -409,37 +402,31 @@ async function downloadPDF() {
       setFill(PURPLE); doc.circle(16, cy + 4, 3, 'F');
       txt(row[0], 16, cy + 5.5, { size: 7, color: WHITE, bold: true, align: 'center' });
       txt(row[1], 22, cy + 5.5, { size: 8, color: PURPLE, bold: true });
-      doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-      const lblW = doc.getTextWidth(row[1]);
-      txt(row[2], 22 + lblW + 2, cy + 5.5, { size: 8, color: GRAY, maxWidth: W - 28 - 22 - lblW - 2 });
+      txt(row[2], 22 + doc.getTextWidth(row[1]) + 2, cy + 5.5, { size: 8, color: GRAY });
       cy += 10;
     });
 
-    const stText = 'These four pillars come together to provide a holistic, evidence-based view of your potential - empowering you to make informed decisions today for a more confident tomorrow.';
-    const stL = doc.splitTextToSize(stText, W - 36);
-    const stH = 10 + stL.length * 5;
-    rect(10, cy, W - 20, stH, '#F5F3FF', PURPLE, 2);
+    rect(10, cy, W - 20, 14, '#F5F3FF', PURPLE, 2);
     txt('Stronger Together', 14, cy + 7, { size: 9, color: PURPLE, bold: true });
-    stL.forEach((ln, i) => txt(ln, 14, cy + 13 + i * 5, { size: 7.5, color: '#374151' }));
-    cy += stH + 2;
+    const stL = doc.splitTextToSize('These four pillars come together to provide a holistic, evidence-based view of your potential — empowering you to make informed decisions today for a more confident tomorrow.', W - 30);
+    txt(stL.join('\n'), 14, cy + 12, { size: 7.5, color: '#374151' });
 
     footer(2);
 
     /* ═══════════════════════════════════════════════
-       PAGE 3 - PROFILE SNAPSHOT
+       PAGE 3 — PROFILE SNAPSHOT
     ═══════════════════════════════════════════════ */
     doc.addPage();
     sectionHeader('Profile Snapshot', 'A quick overview of your overall profile, key strengths and growth areas');
-    studentBar(22);
+    studentBar(20);
 
-    cy = 34;
+    cy = 32;
+    rect(10, cy, W - 20, 18, '#F8FAFF', '#C4B5FD', 2);
+    txt('How to read this section:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
     const howTo = 'For Personality, Aptitude, and Career Interest, higher scores indicate stronger alignment. For SEAA Readiness, lower scores indicate stronger readiness; higher scores indicate greater support may be helpful.';
     const howL = doc.splitTextToSize(howTo, W - 30);
-    const howH = 8 + howL.length * 4.5;
-    rect(10, cy, W - 20, howH, '#F8FAFF', '#C4B5FD', 2);
-    txt('How to read this section:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-    howL.forEach((ln, i) => txt(ln, 14, cy + 11 + i * 4.5, { size: 7.5, color: '#374151' }));
-    cy += howH + 4;
+    txt(howL.join('\n'), 14, cy + 11, { size: 7.5, color: '#374151' });
+    cy += 22;
 
     const persStatus  = avgPers >= 6.5 ? 'Strength' : avgPers >= 4 ? 'Developing' : 'Support Needed';
     const aptStatus   = avgApt  >= 6.5 ? 'Strength' : avgApt  >= 4 ? 'Developing' : 'Support Needed';
@@ -456,7 +443,7 @@ async function downloadPDF() {
       { title:'Personality',     status: persStatus, note: topPersonality.length ? 'Dominant: ' + topPersonality.slice(0,2).map(t => t.name).join(', ') : 'Personality profile across 9 dimensions.' },
       { title:'Aptitude',        status: aptStatus,  note: aptStrong.length ? 'Strong areas: ' + aptStrong.slice(0,2).join(', ') : 'Aptitude profile across 8 ability domains.' },
       { title:'Career Interest', status: cpiStatus,  note: top3[0] ? 'Top interest: ' + top3[0].label + ' (' + top3[0].score + '/20)' : 'Career interest mapped across domains.' },
-      { title:'SEAA Readiness',  status: seaWorst,   note: seaCards.map(c => c.title.split(' ')[0] + ': ' + c.score + '/20').join(' | ') },
+      { title:'SEAA Readiness',  status: seaWorst,   note: seaCards.map(c => c.title.split(' ')[0] + ': ' + c.score + '/20').join(' · ') },
     ];
     snapCards.forEach((c, i) => {
       const col = i % 2, row = Math.floor(i / 2);
@@ -483,17 +470,17 @@ async function downloadPDF() {
 
     rect(10, cy, W - 20, 10, LIGHT_GRAY, null, 2);
     txt('Note:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-    txt('Results reflect both strengths and readiness indicators. Developing and support areas represent opportunities for growth, not limitations.', 24, cy + 6, { size: 7.5, color: GRAY, maxWidth: W - 38 });
+    txt('Results reflect both strengths and readiness indicators. Developing and support areas represent opportunities for growth, not limitations.', 24, cy + 6, { size: 7.5, color: GRAY });
 
     footer(3);
 
     /* ═══════════════════════════════════════════════
-       PAGE 4 - PERSONALITY PROFILE
+       PAGE 4 — PERSONALITY PROFILE
     ═══════════════════════════════════════════════ */
     doc.addPage();
     sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
-    studentBar(22);
-    cy = 34;
+    studentBar(20);
+    cy = 32;
 
     rect(10, cy, W - 20, 7, LIGHT_GRAY, null, 1);
     setFill(PURPLE);       doc.circle(18, cy + 3.5, 2.5, 'F'); txt('Strength',        22, cy + 5, { size: 7.5, color: '#1F2937' });
@@ -501,18 +488,18 @@ async function downloadPDF() {
     setFill(PINK);         doc.circle(92, cy + 3.5, 2.5, 'F'); txt('Needs Attention', 96, cy + 5, { size: 7.5, color: '#1F2937' });
     cy += 11;
 
-    rect(10, cy, W - 20, 60, '#FAFAFA', '#E5E7EB', 2);
-    txt('Personality Stanine Scores - 9 Dimensions', 14, cy + 6, { size: 8, color: GRAY, bold: true });
+    rect(10, cy, W - 20, 62, '#FAFAFA', '#E5E7EB', 2);
+    txt('Personality Stanine Scores — 9 Dimensions', 14, cy + 6, { size: 8, color: GRAY, bold: true });
     personality9.forEach((d, i) => stanineBar(d.name, d.stanine, cy + 14 + i * 5.5, stanineColor(d.stanine)));
     for (let i = 1; i <= 9; i++) {
       const bx = 70 + ((i - 1) / 8) * (W - 90);
-      txt(String(i), bx, cy + 62, { size: 6, color: GRAY, align: 'center' });
+      txt(String(i), bx, cy + 64, { size: 6, color: GRAY, align: 'center' });
     }
-    cy += 66;
+    cy += 68;
 
     rect(10, cy, W - 20, 18, '#F5F3FF', '#C4B5FD', 2);
     txt('Personality Graph:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-    const pgL = doc.splitTextToSize('Graphical interpretations are based on the Stanine (Standard Nine) Scale, where scores are reported across a 1-9 range, with 1-3 = Needs attention, 4-6 = Developing, and 7-9 = Strength.', W - 40);
+    const pgL = doc.splitTextToSize('Graphical interpretations are based on the Stanine (Standard Nine) Scale, where scores are reported across a 1–9 range, with 1–3 = Needs attention, 4–6 = Developing, and 7–9 = Strength.', W - 40);
     txt(pgL.join('\n'), 14, cy + 12, { size: 7.5, color: '#374151' });
     cy += 22;
 
@@ -524,12 +511,12 @@ async function downloadPDF() {
     txt('Top 3 Dominant Traits', 14, cy, { size: 9, color: '#1F2937', bold: true });
     cy += 5;
     [0, 1, 2].forEach((idx) => {
-      const trait = topPersonality[idx] || { name:'-', stanine:0, label:'-' };
+      const trait = topPersonality[idx] || { name:'—', stanine:0, label:'—' };
       const px = 10 + idx * 63;
       rect(px, cy, 59, 12, LIGHT_GRAY, '#D1D5DB', 2);
       txt('0' + (idx + 1), px + 5, cy + 8, { size: 9, color: PURPLE, bold: true });
       txt(trait.name, px + 16, cy + 6, { size: 7.5, color: '#1F2937', bold: true, maxWidth: 42 });
-      txt(trait.label + ' | ' + trait.stanine + '/9', px + 16, cy + 11, { size: 7, color: GRAY });
+      txt(trait.label + ' · ' + trait.stanine + '/9', px + 16, cy + 11, { size: 7, color: GRAY });
     });
     cy += 18;
 
@@ -548,7 +535,7 @@ async function downloadPDF() {
     };
     personality9.forEach((d, i) => {
       const num = '0' + (i + 1);
-      const desc = traitDescs[d.name] || (d.name + ' - score ' + d.stanine + '/9 (' + stanineBand(d.stanine) + ').');
+      const desc = traitDescs[d.name] || (d.name + ' — score ' + d.stanine + '/9 (' + stanineBand(d.stanine) + ').');
       const col = i % 2, row = Math.floor(i / 2);
       const px = 10 + col * 97, py = cy + row * 22;
       rect(px, py, 93, 18, '#F0F9FF', '#BAE6FD', 2);
@@ -559,68 +546,87 @@ async function downloadPDF() {
     });
     cy += Math.ceil(personality9.length / 2) * 22 + 4;
 
-    // AI Personality Insight — always shown; uses AI prose when available,
-    // falls back to a deterministic insight paragraph when not.
-    if (cy + 22 > H - 16) {
-      doc.addPage();
-      sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
-      studentBar(22);
-      cy = 34;
-    }
-    // Title bar — always rendered
-    rect(10, cy, W - 20, 8, '#EFF6FF', '#BFDBFE', 2);
-    txt('Personality Insight (AI)', 14, cy + 6, { size: 9, color: '#1D4ED8', bold: true });
-    cy += 10;
-
-    const personalityFallback = (() => {
-      const top2Names = topPersonality.slice(0, 2).map(t => t.name).join(' and ');
-      const weak2Names = personality9.slice().sort((a,b) => a.stanine - b.stanine).slice(0,2).map(t => t.name).join(' and ');
-      return studentName + '\'s personality profile is defined by strong ' + top2Names + ', which provides a solid foundation for leadership-oriented and detail-sensitive roles. These traits support confident decision-making, careful risk assessment, and the ability to inspire peers through integrity and purpose.' +
-        '\n\nWhile ' + weak2Names + ' are currently developing areas, these represent exciting opportunities for growth. Engaging in creative projects, varied learning experiences, and reflective practice can help balance the profile and expand potential pathways.';
-    })();
-
-    cy = drawProse(aiText('personality_profile', personalityFallback), cy, {
-      size: 7.5, color: '#374151', lineH: 4.2, paraGap: 3,
-      maxW: W - 28, x: 14, bottom: H - 16, pageStart: 32,
-      onNewPage: function () {
-        sectionHeader('Personality Insight (continued)', '');
-        studentBar(22);
-      },
-    });
-    cy += 2;
-
-    // Development suggestions (always shown)
-    const persWeak2 = personality9.slice().sort((a,b) => a.stanine - b.stanine).slice(0, 3);
-      if (persWeak2.length && cy + 24 < H - 14) {
+    // AI Personality Insight — uses personality_profile when available;
+    // otherwise renders weakness-driven bullet suggestions.
+    if (aiHas('personality_profile')) {
+      // Only break page if not enough room for header + at least 2 lines
+      if (cy + 22 > H - 16) {
+        doc.addPage();
+        sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+        studentBar(20);
+        cy = 32;
+      }
+      // Title bar - matches template's "Personality Insight (AI)" style
+      txt('Personality Insight (AI)', 14, cy, { size: 9, color: '#1F2937', bold: true });
+      cy += 5;
+      // Prose body — paginates if long
+      cy = drawProse(aiText('personality_profile', ''), cy, {
+        size: 7.5, color: '#374151', lineH: 4.2, paraGap: 3,
+        maxW: W - 28, x: 14, bottom: H - 16, pageStart: 32,
+        onNewPage: function () {
+          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+          studentBar(20);
+        },
+      });
+      cy += 4;
+      // Development suggestions box — always rendered to match template
+      const persWeak2 = personality9.slice().sort((a,b) => a.stanine - b.stanine).slice(0, 3);
+      if (persWeak2.length) {
+        if (cy + 30 > H - 16) {
+          doc.addPage();
+          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+          studentBar(20);
+          cy = 32;
+        }
         const suggMap2 = {
           'Leadership & Motivation':    'Take initiative on small group projects to build leadership confidence.',
           'Assertiveness':              'Practice expressing opinions in low-pressure settings such as class discussions.',
           'Cautiousness':               'Develop a habit of pausing to weigh options before deciding.',
           'Adaptability & Flexibility': 'Try new activities or routines weekly to build comfort with change.',
           'Ethical Awareness':          'Reflect on real situations and discuss right-vs-wrong reasoning with a mentor.',
-          'Creativity & Innovation':    'Explore creative outlets - writing, design, problem-solving puzzles - regularly.',
+          'Creativity & Innovation':    'Explore creative outlets — writing, design, problem-solving puzzles — regularly.',
           'Curiosity & Learning':       'Read across diverse topics and ask questions about how things work.',
           'Discipline & Sincerity':     'Use a planner and set small daily goals to build consistency.',
           'Patience & Resilience':      'Practice mindfulness and journaling to build emotional steadiness.',
         };
-        const suggH = 12 + persWeak2.length * 6;
+        const suggH = 12 + persWeak2.length * 5;
         rect(10, cy, W - 20, suggH, '#EFF6FF', '#BFDBFE', 2);
         txt('Development Suggestions', 14, cy + 7, { size: 9, color: '#1D4ED8', bold: true });
         persWeak2.forEach((d, i) => {
           const sug = suggMap2[d.name] || ('Strengthen ' + d.name + ' through targeted practice and reflection.');
-          txt('- ' + sug, 14, cy + 13 + i * 5, { size: 7.5, color: '#374151', maxWidth: W - 28 });
+          txt('• ' + sug, 14, cy + 13 + i * 5, { size: 7.5, color: '#374151', maxWidth: W - 28 });
         });
       }
+    } else {
+      const persWeak = personality9.slice().sort((a,b) => a.stanine - b.stanine).slice(0, 3);
+      const suggMap = {
+        'Leadership & Motivation':    'Take initiative on small group projects to build leadership confidence.',
+        'Assertiveness':              'Practice expressing opinions in low-pressure settings such as class discussions.',
+        'Cautiousness':               'Develop a habit of pausing to weigh options before deciding.',
+        'Adaptability & Flexibility': 'Try new activities or routines weekly to build comfort with change.',
+        'Ethical Awareness':          'Reflect on real situations and discuss right-vs-wrong reasoning with a mentor.',
+        'Creativity & Innovation':    'Explore creative outlets — writing, design, problem-solving puzzles — regularly.',
+        'Curiosity & Learning':       'Read across diverse topics and ask questions about how things work.',
+        'Discipline & Sincerity':     'Use a planner and set small daily goals to build consistency.',
+        'Patience & Resilience':      'Practice mindfulness and journaling to build emotional steadiness.',
+      };
+      rect(10, cy, W - 20, 22, '#EFF6FF', '#BFDBFE', 2);
+      txt('Development Suggestions', 14, cy + 7, { size: 9, color: '#1D4ED8', bold: true });
+      persWeak.forEach((d, i) => {
+        const sug = suggMap[d.name] || ('Strengthen ' + d.name + ' through targeted practice and reflection.');
+        txt('• ' + sug, 14, cy + 13 + i * 4, { size: 7.5, color: '#374151', maxWidth: W - 28 });
+      });
+    }
 
     footer(4);
 
     /* ═══════════════════════════════════════════════
-       PAGE 5 - APTITUDE & ABILITY
+       PAGE 5 — APTITUDE & ABILITY
     ═══════════════════════════════════════════════ */
     doc.addPage();
     sectionHeader('Aptitude & Ability Profile', 'Understand your strengths across different ability areas and emerging areas for development. Indicators of how abilities may align with future learning and career options.');
-    studentBar(22);
-    cy = 34;
+    studentBar(20);
+    cy = 32;
 
     rect(10, cy, W - 20, 7, LIGHT_GRAY, null, 1);
     setFill(PURPLE);       doc.circle(18,  cy + 3.5, 2.5, 'F'); txt('Strong Aptitude Area',  22,  cy + 5, { size: 7.5, color: '#1F2937' });
@@ -629,7 +635,7 @@ async function downloadPDF() {
     cy += 11;
 
     rect(10, cy, W - 20, 56, '#FAFAFA', '#E5E7EB', 2);
-    txt('Aptitude Stanine Scores - 8 Domains', 14, cy + 6, { size: 8, color: GRAY, bold: true });
+    txt('Aptitude Stanine Scores — 8 Domains', 14, cy + 6, { size: 8, color: GRAY, bold: true });
     aptitude8.forEach((d, i) => stanineBar(d.name, d.stanine, cy + 14 + i * 5.5, stanineColor(d.stanine)));
     for (let i = 1; i <= 9; i++) {
       const bx = 70 + ((i - 1) / 8) * (W - 90);
@@ -639,12 +645,12 @@ async function downloadPDF() {
 
     rect(10, cy, W - 20, 16, '#F5F3FF', '#C4B5FD', 2);
     txt('Aptitude Graph:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-    txt('Graphical interpretations are based on the Stanine (Standard Nine) Scale, where scores are reported across a 1-9 range, with 1-3 = Area of Development, 4-6 = Emerging Area, and 7-9 = Strong Aptitude Area.', 14, cy + 11, { size: 7, color: '#374151', maxWidth: W - 28 });
+    txt('Graphical interpretations are based on the Stanine (Standard Nine) Scale, where scores are reported across a 1–9 range, with 1–3 = Area of Development, 4–6 = Emerging Area, and 7–9 = Strong Aptitude Area.', 14, cy + 11, { size: 7, color: '#374151', maxWidth: W - 28 });
     cy += 20;
 
     rect(10,  cy, 93, 22, '#F0FDF4', GREEN,     2);
     txt('Strong Aptitude Areas', 14, cy + 7, { size: 8, color: GREEN, bold: true });
-    txt(aptStrong.length ? aptStrong.slice(0,3).join('\n') : '- building foundational strengths -', 14, cy + 13, { size: 8, color: '#1F2937' });
+    txt(aptStrong.length ? aptStrong.slice(0,3).join('\n') : '— building foundational strengths —', 14, cy + 13, { size: 8, color: '#1F2937' });
 
     rect(107, cy, 93, 22, '#EFF6FF', '#3B82F6', 2);
     txt('Emerging Areas', 111, cy + 7, { size: 8, color: '#3B82F6', bold: true });
@@ -666,27 +672,26 @@ async function downloadPDF() {
     if (aiHas('aptitude_profile')) {
       if (cy + 14 > H - 16) {
         doc.addPage();
-        sectionHeader('Aptitude Insight (AI)', '');
-        studentBar(22);
-        cy = 34;
+        sectionHeader('Aptitude & Ability Profile', 'Understand your strengths across different ability areas and emerging areas for development.');
+        studentBar(20);
+        cy = 32;
       }
-      // Box header
-      rect(10, cy, W - 20, 7, LIGHT_GRAY, null, 2);
-      txt('Aptitude Insight (AI):', 14, cy + 5, { size: 8, color: '#1F2937', bold: true });
-      cy += 9;
+      // Title matches template: "Aptitude Insight (AI):" label then prose
+      txt('Aptitude Insight (AI):', 14, cy, { size: 8, color: '#1F2937', bold: true });
+      cy += 5;
       cy = drawProse(aiText('aptitude_profile', ''), cy, {
         size: 7.5, color: '#374151', lineH: 4.2, paraGap: 3,
         maxW: W - 28, x: 14, bottom: H - 14, pageStart: 32,
         onNewPage: function () {
-          sectionHeader('Aptitude Insight (continued)', '');
-          studentBar(22);
+          sectionHeader('Aptitude & Ability Profile', 'Understand your strengths across different ability areas and emerging areas for development.');
+          studentBar(20);
         },
       });
       cy += 2;
     } else {
       rect(10, cy, W - 20, 14, LIGHT_GRAY, null, 2);
       txt('Career Relevance Mapping:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-      const aptDomLine = aptStrong.slice(0,3).map(a => a.split(' ')[0] + ' -> ' + (aptDomainMap[a] || []).slice(0,2).join('/')).join('  |  ') ||
+      const aptDomLine = aptStrong.slice(0,3).map(a => a.split(' ')[0] + ' → ' + (aptDomainMap[a] || []).slice(0,2).join('/')).join('  ·  ') ||
                          'Build strengths broadly across reasoning, language and quantitative skills.';
       txt(aptDomLine, 14, cy + 11, { size: 7, color: GRAY, maxWidth: W - 28 });
       cy += 18;
@@ -708,50 +713,48 @@ async function downloadPDF() {
     txt('Understanding Aptitude Areas and Related Career Pathways', 14, cy, { size: 9, color: '#1F2937', bold: true });
     cy += 5;
     const tblHeaders = ['Aptitude Areas', 'Description', 'Potential Careers'];
-    const tblColW = [38, 68, 80];
-    const tblX    = [10, 48, 116];
+    const tblColW = [40, 65, 85];
+    const tblX    = [10, 50, 115];
     rect(10, cy, W - 20, 7, PURPLE, null, 0);
     tblHeaders.forEach((h, i) => txt(h, tblX[i] + 2, cy + 5, { size: 8, color: WHITE, bold: true }));
     cy += 7;
     const aptDescriptions = {
-      'Verbal Ability':         ['Language understanding, expression and communication.',           'Psychology | Law | Journalism | Content | Policy'],
-      'Perceptual Speed':       ['Quick visual scanning, comparison and attention to detail.',       'Data Analytics | Cybersecurity | Forensics'],
-      'Numerical Ability':      ['Comfort with numbers, data and quantitative reasoning.',           'Finance | Actuarial | Data Science | AI/ML'],
-      'Spatial Ability':        ['Visualizing shapes, patterns and space-based relationships.',      'Architecture | UX/UI | Product Design'],
-      'Mechanical Ability':     ['Understanding machines, tools and mechanical reasoning.',          'Engineering | Industrial Automation | Mechatronics'],
-      'Abstract Reasoning':     ['Pattern recognition, logical thinking and problem solving.',       'Strategy Consulting | Cognitive Science | AI Research'],
-      'Legal Studies Ability':  ['Reasoning, argument formation and rule-based thinking.',           'Law | International Relations | Public Policy'],
-      'Health & Medical Apt.':  ['Readiness for health, biology and clinical reasoning.',            'Medicine | Biotechnology | Clinical Psychology'],
+      'Verbal Ability':         ['Language understanding, expression and communication.',           'Psychology · Law · Journalism · Content · Policy'],
+      'Perceptual Speed':       ['Quick visual scanning, comparison and attention to detail.',       'Data Analytics · Cybersecurity · Forensics'],
+      'Numerical Ability':      ['Comfort with numbers, data and quantitative reasoning.',           'Finance · Actuarial · Data Science · AI/ML'],
+      'Spatial Ability':        ['Visualizing shapes, patterns and space-based relationships.',      'Architecture · UX/UI · Product Design'],
+      'Mechanical Ability':     ['Understanding machines, tools and mechanical reasoning.',          'Engineering · Industrial Automation · Mechatronics'],
+      'Abstract Reasoning':     ['Pattern recognition, logical thinking and problem solving.',       'Strategy Consulting · Cognitive Science · AI Research'],
+      'Legal Studies Ability':  ['Reasoning, argument formation and rule-based thinking.',           'Law · International Relations · Public Policy'],
+      'Health & Medical Apt.':  ['Readiness for health, biology and clinical reasoning.',            'Medicine · Biotechnology · Clinical Psychology'],
     };
     const aptRows = aptitude8.slice().sort((a,b) => b.stanine - a.stanine).map(d => {
-      const md = aptDescriptions[d.name] || ['-', '-'];
+      const md = aptDescriptions[d.name] || ['—', '—'];
       return [d.name, md[0], md[1]];
     });
     aptRows.forEach((row, ri) => {
       const rowBg = ri % 2 === 0 ? WHITE : LIGHT_GRAY;
-      rect(10, cy, W - 20, 12, rowBg, '#E5E7EB', 0);
+      rect(10, cy, W - 20, 10, rowBg, '#E5E7EB', 0);
       row.forEach((cell, ci) => {
         const cL = doc.splitTextToSize(safe(cell), tblColW[ci] - 4);
         txt(cL.slice(0,2).join('\n'), tblX[ci] + 2, cy + 5, { size: 6.5, color: '#374151' });
       });
-      cy += 12;
+      cy += 10;
     });
 
-    cy += 2;
-    rect(10, cy, W - 20, 10, LIGHT_GRAY, null, 2);
-    txt('Note:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-    txt('Career options listed are indicative, not exhaustive. Explore additional pathways aligned with aptitude, interests, and academic performance.', 24, cy + 6, { size: 7.5, color: GRAY, maxWidth: W - 40 });
-    cy += 12;
+    rect(10, cy + 2, W - 20, 10, LIGHT_GRAY, null, 2);
+    txt('Note:', 14, cy + 8, { size: 8, color: '#1F2937', bold: true });
+    txt('Career options listed are indicative, not exhaustive. Explore additional pathways aligned with aptitude, interests, and academic performance.', 24, cy + 8, { size: 7.5, color: GRAY, maxWidth: W - 40 });
 
     footer(5);
 
     /* ═══════════════════════════════════════════════
-       PAGE 6 - CAREER INTEREST
+       PAGE 6 — CAREER INTEREST
     ═══════════════════════════════════════════════ */
     doc.addPage();
-    sectionHeader('Career Interest Profile', 'Career areas you may be most inclined toward. Primary and emerging interest clusters across career domains - helping explore pathways that connect with your preferences.');
-    studentBar(22);
-    cy = 34;
+    sectionHeader('Career Interest Profile', 'Career areas you may be most inclined toward. Primary and emerging interest clusters across career domains — helping explore pathways that connect with your preferences.');
+    studentBar(20);
+    cy = 32;
 
     rect(10, cy, W - 20, 7, LIGHT_GRAY, null, 1);
     setFill(PURPLE);       doc.circle(18,  cy + 3.5, 2.5, 'F'); txt('Strong Interest',   22,  cy + 5, { size: 7.5, color: '#1F2937' });
@@ -760,11 +763,11 @@ async function downloadPDF() {
     cy += 11;
 
     rect(10, cy, W - 20, 60, '#FAFAFA', '#E5E7EB', 2);
-    txt('Career Interest Ranking - Score out of 20 per domain', 14, cy + 6, { size: 8, color: GRAY, bold: true });
+    txt('Career Interest Ranking — Score out of 20 per domain', 14, cy + 6, { size: 8, color: GRAY, bold: true });
     const barX2 = 70, barW2 = W - barX2 - 20;
     careers8.forEach((c, i) => {
       const y2 = cy + 14 + i * 6;
-      txt(c.label, 14, y2, { size: 6.5, color: '#1F2937', maxWidth: 53 });
+      txt(c.label, 67, y2, { size: 7, color: '#1F2937', align: 'right', maxWidth: 55 });
       rect(barX2, y2 - 3.5, barW2, 5, '#E5E7EB', null, 1);
       rect(barX2, y2 - 3.5, (Math.max(0, c.score) / 20) * barW2, 5, cpiColor(c.level), null, 1);
       txt(String(c.score), barX2 + barW2 + 2, y2, { size: 7, color: GRAY, bold: true });
@@ -777,7 +780,7 @@ async function downloadPDF() {
 
     rect(10, cy, W - 20, 14, '#F5F3FF', '#C4B5FD', 2);
     txt('Career Interest Graph:', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-    txt('Scores in the Career Interest graph represent raw scores (0-20 scale) and reflect the student\'s relative interest levels across assessed career areas where 0-7 indicates Low Interest Area; 8-14 indicates Moderate Interest Area; 15-20 indicates Strong Interest Area.', 14, cy + 11, { size: 7, color: '#374151', maxWidth: W - 28 });
+    txt('Scores in the Career Interest graph represent raw scores (0–20 scale) and reflect the student\'s relative interest levels across assessed career areas where 0-7 indicates Low Interest Area; 8-14 indicates Moderate Interest Area; 15-20 indicates Strong Interest Area.', 14, cy + 11, { size: 7, color: '#374151', maxWidth: W - 28 });
     cy += 20;
 
     rect(10, cy, W - 20, 10, '#F5F3FF', PURPLE, 2);
@@ -790,8 +793,8 @@ async function downloadPDF() {
       if (cy + 14 > H - 16) {
         doc.addPage();
         sectionHeader('Interest Insight (AI)', '');
-        studentBar(22);
-        cy = 34;
+        studentBar(20);
+        cy = 32;
       }
       txt('Interest Insight (AI)', 14, cy, { size: 9, color: '#1F2937', bold: true });
       cy += 5;
@@ -800,7 +803,7 @@ async function downloadPDF() {
         maxW: W - 28, x: 14, bottom: H - 14, pageStart: 32,
         onNewPage: function () {
           sectionHeader('Career Interest (continued)', '');
-          studentBar(22);
+          studentBar(20);
         },
       });
       cy += 3;
@@ -817,20 +820,20 @@ async function downloadPDF() {
 
     // Keys MUST match CPI_AREAS labels exactly (defined elsewhere in app.js).
     const careerPathwayMap = {
-      'Science & Technology':         'Engineering | CS | Research | AI/ML',
-      'Health & Medical Science':     'Medicine | Allied Health | Public Health',
-      'Language & Communication':     'Journalism | Content | Linguistics | PR',
-      'Creative Design & Perf. Arts': 'UX/UI | Animation | Visual Arts | Performing Arts',
-      'Legal & Judiciary':            'Law | Policy | Civil Services',
-      'Administration & Governance':  'Public Admin | Management | Civil Services',
-      'Education & Research':         'Teaching | Academia | Research | EdTech',
-      'Business & Entrepreneurship':  'Business | Finance | Startups | Consulting',
-      'People & Service':             'Counselling | Social Work | NGO | HR',
-      'Sports & Physical Perf.':      'Sports Science | Coaching | Athletics',
+      'Science & Technology':         'Engineering · CS · Research · AI/ML',
+      'Health & Medical Science':     'Medicine · Allied Health · Public Health',
+      'Language & Communication':     'Journalism · Content · Linguistics · PR',
+      'Creative Design & Perf. Arts': 'UX/UI · Animation · Visual Arts · Performing Arts',
+      'Legal & Judiciary':            'Law · Policy · Civil Services',
+      'Administration & Governance':  'Public Admin · Management · Civil Services',
+      'Education & Research':         'Teaching · Academia · Research · EdTech',
+      'Business & Entrepreneurship':  'Business · Finance · Startups · Consulting',
+      'People & Service':             'Counselling · Social Work · NGO · HR',
+      'Sports & Physical Perf.':      'Sports Science · Coaching · Athletics',
     };
     const aiCareerTable = (ai && Array.isArray(ai.career_table)) ? ai.career_table : null;
     const clusters = ['Primary', 'Secondary', 'Exploratory'].map((tag, i) => {
-      const item = top3[i] || { label: '-', score: 0 };
+      const item = top3[i] || { label: '—', score: 0 };
       let pathways = careerPathwayMap[item.label] || 'Multiple aligned pathways';
       // Pull from AI career_table when available — prefer matched cluster name,
       // else fall back to positional row.
@@ -864,8 +867,8 @@ async function downloadPDF() {
       if (cy + 14 > H - 16) {
         doc.addPage();
         sectionHeader('What Drives You (AI)', '');
-        studentBar(22);
-        cy = 34;
+        studentBar(20);
+        cy = 32;
       }
       txt('What Drives You (AI)', 14, cy, { size: 9, color: '#1F2937', bold: true });
       cy += 5;
@@ -874,7 +877,7 @@ async function downloadPDF() {
         maxW: W - 28, x: 14, bottom: H - 14, pageStart: 32,
         onNewPage: function () {
           sectionHeader('Career Interest (continued)', '');
-          studentBar(22);
+          studentBar(20);
         },
       });
     }
@@ -882,20 +885,20 @@ async function downloadPDF() {
     footer(6);
 
     /* ═══════════════════════════════════════════════
-       PAGE 7 - SEAA PROFILE
+       PAGE 7 — SEAA PROFILE
     ═══════════════════════════════════════════════ */
     doc.addPage();
-    sectionHeader('Social Emotional Academic Adjustment Profile', 'Adjustment and readiness indicators across social, emotional and academic functioning - identifying strengths, developing areas and support needs');
-    studentBar(22);
-    cy = 34;
+    sectionHeader('Social Emotional Academic Adjustment Profile', 'Adjustment and readiness indicators across social, emotional and academic functioning — identifying strengths, developing areas and support needs');
+    studentBar(20);
+    cy = 32;
 
     rect(10, cy, W - 20, 7, LIGHT_GRAY, null, 1);
-    setFill(PURPLE);       doc.circle(18,  cy + 3.5, 2.5, 'F'); txt('Strong Readiness (A-B)',   22,  cy + 5, { size: 7.5, color: '#1F2937' });
+    setFill(PURPLE);       doc.circle(18,  cy + 3.5, 2.5, 'F'); txt('Strong Readiness (A–B)',   22,  cy + 5, { size: 7.5, color: '#1F2937' });
     setFill(PURPLE_LIGHT); doc.circle(68,  cy + 3.5, 2.5, 'F'); txt('Developing Readiness (C)', 72,  cy + 5, { size: 7.5, color: '#1F2937' });
-    setFill(PINK);         doc.circle(118, cy + 3.5, 2.5, 'F'); txt('Support Needed (D-E)',    122, cy + 5, { size: 7.5, color: '#1F2937' });
+    setFill(PINK);         doc.circle(118, cy + 3.5, 2.5, 'F'); txt('Support Needed (D–E)',    122, cy + 5, { size: 7.5, color: '#1F2937' });
     cy += 10;
 
-    txt('SEAA Domain Scores - Problem Score out of 20 (Lower = Better)', 14, cy + 3, { size: 8, color: GRAY, bold: true });
+    txt('SEAA Domain Scores — Problem Score out of 20 (Lower = Better)', 14, cy + 3, { size: 8, color: GRAY, bold: true });
     cy += 6;
 
     const seaDescs = [
@@ -935,7 +938,7 @@ async function downloadPDF() {
     cy += 48;
 
     rect(10, cy, W - 20, 10, LIGHT_GRAY, null, 2);
-    txt('Scores are based on a 20-point scale per domain. Lower scores reflect stronger adjustment and readiness.', 14, cy + 6, { size: 7.5, color: GRAY, maxWidth: W - 28 });
+    txt('Scores are based on a 20-point scale per domain. Lower scores reflect stronger adjustment and readiness.', 14, cy + 6, { size: 7.5, color: GRAY });
     cy += 14;
 
     txt('Adjustment Snapshot', 14, cy, { size: 10, color: '#1F2937', bold: true });
@@ -958,10 +961,10 @@ async function downloadPDF() {
       txt(c.title, px + 4, cy + 7, { size: 7.5, color: c.color, bold: true });
       pill(c.label, px + 4, cy + 13, c.color, WHITE, 54, 6);
       txt('Strengths', px + 4, cy + 20, { size: 7, color: '#1F2937', bold: true });
-      (s.strengthsByLabel[c.label] || []).slice(0, 2).forEach((it, si) => txt('- ' + it, px + 4, cy + 24 + si * 4, { size: 6.5, color: GRAY }));
+      (s.strengthsByLabel[c.label] || []).slice(0, 2).forEach((it, si) => txt('• ' + it, px + 4, cy + 24 + si * 4, { size: 6.5, color: GRAY }));
       line(px + 4, cy + 29, px + 58, cy + 29, '#E5E7EB', 0.2);
       txt('Focus Areas', px + 4, cy + 32, { size: 7, color: '#1F2937', bold: true });
-      (s.focusByLabel[c.label] || []).slice(0, 2).forEach((it, fi) => txt('- ' + it, px + 4, cy + 36 + fi * 4, { size: 6.5, color: GRAY }));
+      (s.focusByLabel[c.label] || []).slice(0, 2).forEach((it, fi) => txt('• ' + it, px + 4, cy + 36 + fi * 4, { size: 6.5, color: GRAY }));
     });
     cy += 43;
 
@@ -975,13 +978,13 @@ async function downloadPDF() {
     const interpByLabel = {
       'Strong Readiness':     'Strong adjustment with consistent positive functioning. Continue practices that sustain wellbeing.',
       'Developing Readiness': 'Emerging readiness; targeted strategies and consistent practice will strengthen this area.',
-      'Support Needed':       'Higher concern - structured support and guidance are recommended to build readiness.',
+      'Support Needed':       'Higher concern — structured support and guidance are recommended to build readiness.',
     };
     seaCards.forEach((c, ri) => {
       rect(10, cy, W - 20, 14, ri % 2 === 0 ? WHITE : LIGHT_GRAY, '#E5E7EB', 0);
       txt(c.title, dimColX[0] + 2, cy + 7, { size: 8, color: '#1F2937' });
       pill(c.label, dimColX[1] + 2, cy + 7, c.color, WHITE, 42, 6);
-      const interpL = doc.splitTextToSize(interpByLabel[c.label] || '-', 88);
+      const interpL = doc.splitTextToSize(interpByLabel[c.label] || '—', 88);
       txt(interpL.slice(0,2).join('\n'), dimColX[2] + 2, cy + 5, { size: 6.5, color: GRAY });
       cy += 14;
     });
@@ -991,8 +994,8 @@ async function downloadPDF() {
       if (cy + 14 > H - 16) {
         doc.addPage();
         sectionHeader('Wellbeing Guidance (AI)', '');
-        studentBar(22);
-        cy = 34;
+        studentBar(20);
+        cy = 32;
       }
       txt('Wellbeing Guidance (AI)', 14, cy, { size: 9, color: '#1F2937', bold: true });
       cy += 5;
@@ -1001,7 +1004,7 @@ async function downloadPDF() {
         maxW: W - 28, x: 14, bottom: H - 14, pageStart: 32,
         onNewPage: function () {
           sectionHeader('SEAA Profile (continued)', '');
-          studentBar(22);
+          studentBar(20);
         },
       });
     } else {
@@ -1028,12 +1031,12 @@ async function downloadPDF() {
 
     rect(10, cy, W - 20, 10, '#F5F3FF', PURPLE, 2);
     doc.setLineWidth(1.5); setDraw(PURPLE); doc.line(10, cy, 10, cy + 10);
-    txt('These results provide a snapshot for guidance purposes only. They reflect the current state at the time of assessment and may evolve over time.', 15, cy + 6, { size: 7.5, color: '#374151', maxWidth: W - 32 });
+    txt('These results provide a snapshot for guidance purposes only. They reflect the current state at the time of assessment and may evolve over time.', 15, cy + 6, { size: 7.5, color: '#374151', maxWidth: W - 30 });
 
     footer(7);
 
     /* ═══════════════════════════════════════════════
-       PAGES 8-9 - GAP ANALYSIS
+       PAGES 8–9 — GAP ANALYSIS
     ═══════════════════════════════════════════════ */
     const findApt  = (name) => aptitude8.find(a => a.name === name) || { name: name, stanine: 5 };
     const findPers = (name) => personality9.find(p => p.name === name) || { name: name, stanine: 5 };
@@ -1066,7 +1069,7 @@ async function downloadPDF() {
       const seaR = seaToReadiness9(m.sea);
       const seaName = m.sea === 'S' ? 'Social Readiness' : m.sea === 'E' ? 'Emotional Readiness' : 'Academic Readiness';
       return {
-        title: 'Pathway ' + (idx + 1) + ' - ' + p.label,
+        title: 'Pathway ' + (idx + 1) + ' — ' + p.label,
         factors: [
           ['Aptitude Factor',    m.apt,   aptD.stanine,  7],
           ['Personality Factor', m.pers,  persD.stanine, 7],
@@ -1098,9 +1101,9 @@ async function downloadPDF() {
     };
 
     doc.addPage();
-    sectionHeader('Gap Analysis', 'Adjustment and readiness indicators across social, emotional and academic functioning - identifying strengths, developing areas and support needs');
-    studentBar(22);
-    cy = 34;
+    sectionHeader('Gap Analysis', 'Adjustment and readiness indicators across social, emotional and academic functioning — identifying strengths, developing areas and support needs');
+    studentBar(20);
+    cy = 32;
     const gapNote = 'For each recommended pathway, 3 key parameters are compared: 1 Aptitude factor, 1 Personality factor, and 1 SEAA readiness factor. Purple bars show your current level. Grey bars show the level typically required for that pathway.';
     const gnL = doc.splitTextToSize(gapNote, W - 28);
     txt(gnL.join('\n'), 14, cy + 4, { size: 8, color: '#374151' });
@@ -1110,19 +1113,19 @@ async function downloadPDF() {
     footer(8);
 
     doc.addPage();
-    sectionHeader('Gap Analysis', 'Adjustment and readiness indicators across social, emotional and academic functioning - identifying strengths, developing areas and support needs');
-    studentBar(22);
-    cy = 34;
+    sectionHeader('Gap Analysis', 'Adjustment and readiness indicators across social, emotional and academic functioning — identifying strengths, developing areas and support needs');
+    studentBar(20);
+    cy = 32;
     cy = drawPathwayGap(pathwayGaps[2] || { title:'Pathway 3', factors:[] }, cy);
     cy = drawPathwayGap(pathwayGaps[3] || { title:'Pathway 4', factors:[] }, cy);
     footer(9);
 
     /* ═══════════════════════════════════════════════
-       PAGE 10 - INTEGRATED CAREER FIT MATRIX
+       PAGE 10 — INTEGRATED CAREER FIT MATRIX
     ═══════════════════════════════════════════════ */
     doc.addPage();
     sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
-    studentBar(22);
+    studentBar(20);
     cy = 30;
 
     const matrixNote = 'This matrix combines your Interest, Aptitude, Personality and Wellbeing readiness to calculate an overall alignment level for each career cluster. Strong = well aligned across all domains. Emerging = developing alignment. Exploratory = worth exploring with more exposure.';
@@ -1162,7 +1165,7 @@ async function downloadPDF() {
         const pct  = (typeof r.suitability_pct === 'number') ? Math.round(r.suitability_pct)
                    : (parseFloat(r.suitability_pct) || 0);
         const align = pct >= 80 ? 'Strong Fit' : pct >= 65 ? 'Emerging Fit' : 'Exploratory';
-        const careerName = r.career || r.cluster || '-';
+        const careerName = r.career || r.cluster || '—';
         return [careerName, interest, aptL, persL, seaL, align, pct, r.cluster || '', r.rationale || ''];
       });
     } else {
@@ -1213,15 +1216,15 @@ async function downloadPDF() {
     const emergingFits = matrixRowsLive.filter(r => r[5].indexOf('Emerging') >= 0).map(r => r[0]);
     const exploratory  = matrixRowsLive.filter(r => r[5].indexOf('Exploratory') >= 0).map(r => r[0]);
     const fitBoxes = [
-      { title:'Strong Fit Pathways',    color: PURPLE,       bg:'#F5F3FF', items: strongFits   },
-      { title:'Emerging Fit Pathways',  color: PURPLE_LIGHT, bg:'#EDE9FE', items: emergingFits },
-      { title:'Exploratory Pathways',   color: GRAY,         bg: LIGHT_GRAY, items: exploratory },
+      { title:'● Strong Fit Pathways',    color: PURPLE,       bg:'#F5F3FF', items: strongFits   },
+      { title:'● Emerging Fit Pathways',  color: PURPLE_LIGHT, bg:'#EDE9FE', items: emergingFits },
+      { title:'● Exploratory Pathways',   color: GRAY,         bg: LIGHT_GRAY, items: exploratory },
     ];
     fitBoxes.forEach((fb, i) => {
       const px = 10 + i * 66;
       rect(px, cy, 62, 18, fb.bg, fb.color, 2);
       txt(fb.title, px + 4, cy + 7, { size: 8, color: fb.color, bold: true });
-      const items = fb.items.length ? fb.items : ['-'];
+      const items = fb.items.length ? fb.items : ['—'];
       items.slice(0, 2).forEach((it, k) => txt(it, px + 4, cy + 12 + k * 4, { size: 7, color: '#374151', maxWidth: 56 }));
     });
     cy += 22;
@@ -1233,8 +1236,8 @@ async function downloadPDF() {
       if (cy + 14 > H - 36) {
         doc.addPage();
         sectionHeader('Stream & Pathway Advice (AI)', '');
-        studentBar(22);
-        cy = 34;
+        studentBar(20);
+        cy = 32;
       }
       txt('STREAM & PATHWAY ADVICE (AI)', 14, cy, { size: 9, color: '#1F2937', bold: true });
       cy += 5;
@@ -1243,7 +1246,7 @@ async function downloadPDF() {
         maxW: W - 28, x: 14, bottom: H - 36, pageStart: 32,
         onNewPage: function () {
           sectionHeader('Stream & Pathway Advice (continued)', '');
-          studentBar(22);
+          studentBar(20);
         },
       });
     } else {
@@ -1282,31 +1285,49 @@ async function downloadPDF() {
       });
     }
 
-    if (cy < H - 30) {
-      cy += 2;
-      txt('Tips to Strengthen Aptitude', 14, cy, { size: 8.5, color: '#1F2937', bold: true });
-      cy += 5;
-      const tips = [
-        'Solve reasoning, analytical, and aptitude based questions regularly to strengthen core thinking skills.',
-        'Practice mental math, data interpretation, and problem solving for speed and accuracy.',
-        'Read widely to improve comprehension, critical thinking, and verbal reasoning.',
-        'Engage in strategy based activities such as chess, coding, debates, or Olympiad style challenges.',
-        'Break down complex problems into smaller steps to improve structured thinking.',
-        'Use timed practice to enhance decision making under pressure.',
-        'Strengthen weak aptitude areas through consistent targeted practice and feedback.',
-        'Apply aptitude skills in real contexts - projects, experiments, research, and case studies.',
-        'Develop curiosity by asking why, how, and exploring multiple solutions.',
-        'Build a growth mindset - aptitudes can improve significantly through effort and exposure.',
-      ];
-      tips.forEach((tip, i) => {
-        if (cy + 5 > H - 30) { doc.addPage(); sectionHeader('Tips & Wellbeing', ''); studentBar(22); cy = 34; }
-        txt((i + 1) + '. ' + tip, 14, cy, { size: 7, color: '#374151', maxWidth: W - 28 });
-        cy += 5;
-      });
-      cy += 3;
+    // Tips to Strengthen Aptitude — always render all 10, break page if needed
+    cy += 4;
+    if (cy + 60 > H - 36) {
+      doc.addPage();
+      sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
+      studentBar(20);
+      cy = 32;
     }
+    txt('Tips to Strengthen Aptitude', 14, cy, { size: 8.5, color: '#1F2937', bold: true });
+    cy += 5;
+    const tips = [
+      'Solve reasoning, analytical, and aptitude based questions regularly to strengthen core thinking skills.',
+      'Practice mental math, data interpretation, and problem solving for speed and accuracy.',
+      'Read widely to improve comprehension, critical thinking, and verbal reasoning.',
+      'Engage in strategy based activities such as chess, coding, debates, or Olympiad style challenges.',
+      'Break down complex problems into smaller steps to improve structured thinking.',
+      'Use timed practice to enhance decision making under pressure.',
+      'Strengthen weak aptitude areas through consistent targeted practice and feedback.',
+      'Apply aptitude skills in real contexts — projects, experiments, research, and case studies.',
+      'Develop curiosity by asking why, how, and exploring multiple solutions.',
+      'Build a growth mindset — aptitudes can improve significantly through effort and exposure.',
+    ];
+    tips.forEach((tip, i) => {
+      if (cy + 5 > H - 36) {
+        doc.addPage();
+        sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
+        studentBar(20);
+        cy = 32;
+      }
+      setFill(PURPLE); doc.circle(17, cy - 1.5, 3, 'F');
+      txt(String(i + 1), 17, cy, { size: 6, color: WHITE, bold: true, align: 'center' });
+      txt(tip, 23, cy, { size: 7, color: '#374151', maxWidth: W - 35 });
+      cy += 5;
+    });
+    cy += 4;
 
-    if (cy + 10 > H - 30) { doc.addPage(); sectionHeader('Fostering Wellbeing', ''); studentBar(22); cy = 34; }
+    // Fostering Wellbeing — break page first if not enough room
+    if (cy + 70 > H - 36) {
+      doc.addPage();
+      sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
+      studentBar(20);
+      cy = 32;
+    }
     txt('Fostering Healthy Personality Development & Emotional Wellbeing', 14, cy, { size: 8.5, color: '#1F2937', bold: true });
     cy += 5;
     const wellbeingTips = [
@@ -1322,32 +1343,56 @@ async function downloadPDF() {
       'Seek mentorship, support, and constructive guidance when navigating challenges.',
     ];
     wellbeingTips.forEach((tip, i) => {
-      if (cy + 5 > H - 30) { doc.addPage(); sectionHeader('Fostering Wellbeing (continued)', ''); studentBar(22); cy = 34; }
-      txt((i + 1) + '. ' + tip, 14, cy, { size: 7, color: '#374151', maxWidth: W - 28 });
+      if (cy + 5 > H - 36) {
+        doc.addPage();
+        sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
+        studentBar(20);
+        cy = 32;
+      }
+      setFill(PURPLE); doc.circle(17, cy - 1.5, 3, 'F');
+      txt(String(i + 1), 17, cy, { size: 6, color: WHITE, bold: true, align: 'center' });
+      txt(tip, 23, cy, { size: 7, color: '#374151', maxWidth: W - 35 });
       cy += 5;
     });
     cy += 3;
 
-    rect(10, cy, W - 20, 8, LIGHT_GRAY, null, 2);
-    txt('NOTE: These areas are developmental and can be strengthened over time through consistent practice, support, and effort.', 14, cy + 5, { size: 6.5, color: GRAY, maxWidth: W - 28 });
-    cy += 12;
+    // NOTE box
+    if (cy + 12 > H - 36) {
+      doc.addPage();
+      sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
+      studentBar(20);
+      cy = 32;
+    }
+    rect(10, cy, W - 20, 10, LIGHT_GRAY, null, 2);
+    txt('NOTE:', 14, cy + 6, { size: 7.5, color: '#1F2937', bold: true });
+    txt('These areas are developmental in nature and can be strengthened over time through consistent practice, support, and conscious effort.', 26, cy + 6, { size: 7, color: GRAY, maxWidth: W - 38 });
+    cy += 14;
 
-    if (cy + 16 > H - 16) { doc.addPage(); sectionHeader('Remarks & Disclaimer', ''); studentBar(22); cy = 34; }
+    // Counselor's Remarks
+    if (cy + 20 > H - 14) {
+      doc.addPage();
+      sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
+      studentBar(20);
+      cy = 32;
+    }
+    rect(10, cy, W - 20, 18, '#F5F3FF', '#C4B5FD', 2);
+    txt("Counselor's Remarks", 14, cy + 6, { size: 8, color: PURPLE, bold: true });
     const cr = 'Dear Students, Please note that final academic and career decisions should be made by considering aptitude, interests, and academic performance together. This report is intended to serve as a guidance tool and should be used alongside discussions with parents, teachers, and counselors to support well-informed decision making.';
     const crL = doc.splitTextToSize(cr, W - 28);
-    const crH = 10 + crL.length * 4.5;
-    rect(10, cy, W - 20, crH, '#F5F3FF', '#C4B5FD', 2);
-    txt("Counselor's Remarks", 14, cy + 6, { size: 8, color: PURPLE, bold: true });
-    crL.forEach((ln, i) => txt(ln, 14, cy + 11 + i * 4.5, { size: 7, color: '#374151' }));
-    cy += crH + 4;
+    txt(crL.slice(0,3).join('\n'), 14, cy + 11, { size: 7, color: '#374151' });
+    cy += 22;
 
-    if (cy + 14 > H - 16) { doc.addPage(); sectionHeader('Disclaimer', ''); studentBar(22); cy = 34; }
+    if (cy + 20 > H - 14) {
+      doc.addPage();
+      sectionHeader('Integrated Career Fit Matrix', 'A combined view of career pathways across all four domains');
+      studentBar(20);
+      cy = 32;
+    }
+    rect(10, cy, W - 20, 18, LIGHT_GRAY, null, 2);
+    txt('Disclaimer', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
     const disc = 'This NuMind MAPS Report presents indicative insights derived from standardized assessments to support self-awareness, exploration, and informed decision-making. Recommendations are illustrative, not prescriptive, and should be interpreted alongside academic performance, evolving interests, and guidance from parents, teachers, or qualified counselors. Final academic and career decisions should not be made solely on the basis of this report.';
     const discL = doc.splitTextToSize(disc, W - 28);
-    const discH = 10 + discL.length * 4.5;
-    rect(10, cy, W - 20, discH, LIGHT_GRAY, null, 2);
-    txt('Disclaimer', 14, cy + 6, { size: 8, color: '#1F2937', bold: true });
-    discL.forEach((ln, i) => txt(ln, 14, cy + 11 + i * 4.5, { size: 6.5, color: GRAY }));
+    txt(discL.slice(0,3).join('\n'), 14, cy + 11, { size: 6.5, color: GRAY });
 
     footer(10);
 
@@ -1358,7 +1403,7 @@ async function downloadPDF() {
       doc.setPage(p);
       const fy = H - 8;
       line(10, fy - 3, W - 10, fy - 3, '#E5E7EB', 0.2);
-      txt('numind.co.in | Confidential - For personal guidance only', 14, fy, { size: 7, color: GRAY });
+      txt('numind.co.in | Confidential — For personal guidance only', 14, fy, { size: 7, color: GRAY });
       txt('Page ' + p + ' of ' + totalPages, W - 14, fy, { size: 7, color: GRAY, align: 'right' });
     }
 
