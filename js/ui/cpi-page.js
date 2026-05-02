@@ -82,7 +82,7 @@ function renderCPIQ() {
            ✓ Maximum 3 options selected — deselect one to change.
          </div>`
       : `<div style="font-size:12px;color:var(--ink3);margin-bottom:8px">
-           Select up to <strong>3 options</strong> that feel most like you.
+           Select min 1 and max <strong>3 options</strong> that feel most like you.
            <strong>${selCount}/3 selected.</strong>
          </div>`}
 
