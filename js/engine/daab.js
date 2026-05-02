@@ -35,7 +35,7 @@ const DAAB_VA_QS = [
   { part:'I', instr:'Find the SYNONYM of the word in capitals.', word:'DILIGENT', opts:['brilliant','innovative','outstanding','hard-working'] },
   { part:'I', instr:'Find the SYNONYM of the word in capitals.', word:'CANDID', opts:['bright','frank','explicit','apparent'] },
   { part:'I', instr:'Find the SYNONYM of the word in capitals.', word:'INFURIATE', opts:['influx','engage','enrage','manage'] },
-  { part:'I', instr:'Find the SYNONYM of the word in capitals.', word:'IMPERIOUS', opts:['proud','distant','temper','disastrous'] },
+  { part:'I', instr:'Find the SYNONYM of the word in capitals.', word:'IMPERIOUS', opts:['Authoritative','distant','tempramental','disastrous'] },
   // Part I: Antonyms Q6-10
   { part:'I', instr:'Find the ANTONYM of the word in capitals.', word:'RELINQUISH', opts:['possess','dismiss','renounce','withdraw'] },
   { part:'I', instr:'Find the ANTONYM of the word in capitals.', word:'PRUDENT', opts:['sensible','reckless','shortsighted','inconsiderate'] },
