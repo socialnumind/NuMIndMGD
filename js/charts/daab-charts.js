@@ -5,7 +5,7 @@
 
 import { S } from '../state.js';
 import { DAAB_SUBS } from '../engine/daab.js';
-import { CHARTS, destroyChart, stanineColor } from './core.js';
+import { CHARTS, destroyChart, stanineColor, CHART_ALPHA } from './core.js';
 
 function buildDAAbCharts() {
   const daabSubs = ['va','pa','na','lsa','hma','ar','ma','sa'];
@@ -32,7 +32,7 @@ function buildDAAbCharts() {
         datasets: [{
           label: 'Stanine',
           data: stanines,
-          backgroundColor: colors.map(c => c + 'cc'),
+          backgroundColor: colors.map(c => CHART_ALPHA(c, 0.8)),
           borderColor: colors,
           borderWidth: 2, borderRadius: 8, borderSkipped: false,
         }, {
@@ -69,9 +69,14 @@ function buildDAAbCharts() {
   }
 
   // ── 2. Radar ──
+  // Derive a representative fill colour from the average stanine so the shape
+  // colour reflects the overall aptitude zone rather than always being amber.
   destroyChart('daab-radar');
   const radCtx = document.getElementById('chart-daab-radar');
   if (radCtx) {
+    const avgStanine = Math.round(stanines.reduce((a, b) => a + b, 0) / stanines.length);
+    const radarBorderColor = stanineColor(avgStanine);
+    const radarFillColor   = stanineColor(avgStanine, 0.12);
     CHARTS['daab-radar'] = new Chart(radCtx, {
       type: 'radar',
       data: {
@@ -79,9 +84,9 @@ function buildDAAbCharts() {
         datasets: [{
           label: 'Stanine',
           data: stanines,
-          backgroundColor: 'rgba(245,158,11,0.12)',
-          borderColor: '#f59e0b',
-          pointBackgroundColor: colors,
+          backgroundColor: radarFillColor,
+          borderColor: radarBorderColor,
+          pointBackgroundColor: colors,   // each point keeps its own stanine colour
           pointBorderColor: '#fff',
           pointRadius: 6,
           borderWidth: 2.5, fill: true,
@@ -114,7 +119,7 @@ function buildDAAbCharts() {
         datasets: [{
           label: 'Correct',
           data: raws,
-          backgroundColor: colors.map(c => c + 'cc'),
+          backgroundColor: colors.map(c => CHART_ALPHA(c, 0.8)),
           borderColor: colors,
           borderWidth: 2, borderRadius: 0, borderSkipped: false,
           stack: 'a',

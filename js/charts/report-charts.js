@@ -8,7 +8,7 @@ import { CPI_AREAS } from '../engine/cpi.js';
 import { NMAP_DIMS } from '../engine/nmap.js';
 import { DAAB_SUBS } from '../engine/daab.js';
 import { SEA_DOMAINS } from '../engine/sea.js';
-import { CHARTS, destroyChart, CHART_ALPHA, stanineColor } from './core.js';
+import { CHARTS, destroyChart, CHART_ALPHA, stanineColor, SEL_CAT_COLOR, SEL_DOM_INFO } from './core.js';
 
 function buildReportCharts() {
   /* Builds each inline report chart directly from S data — no cloning,
@@ -17,12 +17,7 @@ function buildReportCharts() {
   /* ─── shared helpers ─── */
   const subLabels = { va:'Verbal', pa:'Perceptual', na:'Numerical', lsa:'Legal',
                       hma:'Health', ar:'Abstract', ma:'Mechanical', sa:'Spatial' };
-  const domInfo   = {
-    E: { label:'Emotional', color:'#1e3a5f' },
-    S: { label:'Social',    color:'#0f766e' },
-    A: { label:'Academic',  color:'#b45309' },
-  };
-  const catColor = { A:'#10b981', B:'#34d399', C:'#f59e0b', D:'#f97316', E:'#ef4444' };
+  // SEL colour maps come from core.js (SEL_CAT_COLOR, SEL_DOM_INFO) — single source of truth.
 
   /* ═══ 1. DAAB bar ═══ */
   destroyChart('daab-bar-rpt');
@@ -39,7 +34,7 @@ function buildReportCharts() {
           labels,
           datasets: [
             { label:'Stanine', data:stanines,
-              backgroundColor: colors.map(c => c+'cc'), borderColor:colors,
+              backgroundColor: colors.map(c => CHART_ALPHA(c, 0.8)), borderColor:colors,
               borderWidth:2, borderRadius:8, borderSkipped:false },
             { type:'line', label:'Average (5)', data:Array(avail.length).fill(5),
               borderColor:'rgba(107,114,128,0.55)', borderDash:[6,4],
@@ -74,12 +69,14 @@ function buildReportCharts() {
       const labels   = avail.map(k => subLabels[k]);
       const stanines = avail.map(k => S.daab[k].scores.stanine);
       const colors   = stanines.map(stanineColor);
+      const avgStn   = Math.round(stanines.reduce((a,b)=>a+b,0)/stanines.length);
       CHARTS['daab-radar-rpt'] = new Chart(daabRadEl, {
         type:'radar',
         data: {
           labels,
           datasets:[{ label:'Stanine', data:stanines,
-            backgroundColor:'rgba(245,158,11,0.12)', borderColor:'#f59e0b',
+            backgroundColor: stanineColor(avgStn, 0.12),
+            borderColor:     stanineColor(avgStn),
             pointBackgroundColor:colors, pointBorderColor:'#fff',
             pointRadius:6, borderWidth:2.5, fill:true }]
         },
@@ -155,12 +152,14 @@ function buildReportCharts() {
     const dims     = S.nmap.scores.dims;
     const stanines = dims.map(d => d.stanine);
     const colors   = stanines.map(stanineColor);
+    const avgStn   = Math.round(stanines.reduce((a,b)=>a+b,0)/stanines.length);
     CHARTS['nmap-radar-rpt'] = new Chart(nmapRadEl, {
       type:'radar',
       data:{
         labels: dims.map(d => d.abbr),
         datasets:[{ label:'Stanine', data:stanines,
-          backgroundColor:'rgba(124,58,237,0.12)', borderColor:'#7c3aed',
+          backgroundColor: stanineColor(avgStn, 0.12),
+          borderColor:     stanineColor(avgStn),
           pointBackgroundColor:colors, pointBorderColor:'#fff',
           pointRadius:7, borderWidth:2.5, fill:true }]
       },
@@ -189,7 +188,7 @@ function buildReportCharts() {
         labels: dims.map(d => d.abbr),
         datasets:[
           { label:'Stanine', data:stanines,
-            backgroundColor:colors.map(c=>c+'bb'), borderColor:colors,
+            backgroundColor:colors.map(c=>CHART_ALPHA(c,0.73)), borderColor:colors,
             borderWidth:2, borderRadius:8, borderSkipped:false },
           { type:'line', label:'Average (5)', data:Array(dims.length).fill(5),
             borderColor:'rgba(107,114,128,0.5)', borderDash:[5,5],
@@ -218,13 +217,13 @@ function buildReportCharts() {
   destroyChart('sel-bar-rpt');
   const selBarEl = document.getElementById('chart-sel-bar-rpt');
   if (selBarEl && S.sea.scores) {
-    const sea  = S.sea.scores;
-    const doms = ['E','S','A'];
-    const barCols = doms.map(d => catColor[sea.cls[d].cat] || '#6b7280');
+    const sea     = S.sea.scores;
+    const doms    = ['E','S','A'];
+    const barCols = doms.map(d => SEL_CAT_COLOR[sea.cls[d].cat] || '#6b7280');
     CHARTS['sel-bar-rpt'] = new Chart(selBarEl, {
       type:'bar',
       data:{
-        labels: doms.map(d => domInfo[d].label),
+        labels: doms.map(d => SEL_DOM_INFO[d].label),
         datasets:[
           { label:'⚠ Problem Score (Higher = More Concern)',
             data:doms.map(d=>sea.domScores[d]),
@@ -236,11 +235,14 @@ function buildReportCharts() {
       options:{
         responsive:true, maintainAspectRatio:false,
         plugins:{
-          legend:{ position:'bottom', labels:{ font:{ family:'Inter', size:11 }, generateLabels: () => [
-            { text:'🟢 0–8 Good Adjustment', fillStyle:'rgba(16,185,129,0.7)', fontColor:'#374151' },
-            { text:'🟡 8–14 Moderate Concern', fillStyle:'rgba(245,158,11,0.7)', fontColor:'#374151' },
-            { text:'🔴 14–20 Needs Attention', fillStyle:'rgba(239,68,68,0.7)', fontColor:'#374151' },
-          ]}},
+          legend:{ position:'bottom', labels:{ font:{ family:'Inter', size:11 },
+            generateLabels: () => doms.map(d => {
+              const cl  = sea.cls[d];
+              const col = SEL_CAT_COLOR[cl.cat] || '#6b7280';
+              return { text:`${SEL_DOM_INFO[d].label}: Cat ${cl.cat} — ${cl.level}`,
+                fillStyle:col+'cc', strokeStyle:col, fontColor:'#374151', lineWidth:1.5 };
+            }),
+          }},
           tooltip:{ callbacks:{
             label: ctx => ` Score: ${ctx.raw}/20`,
             afterLabel: ctx => {
@@ -264,9 +266,9 @@ function buildReportCharts() {
     const sea  = S.sea.scores;
     const doms = ['E','S','A'];
     gaugesDst.innerHTML = doms.map(d => {
-      const sc = sea.domScores[d], cl = sea.cls[d], di = domInfo[d];
+      const sc = sea.domScores[d], cl = sea.cls[d], di = SEL_DOM_INFO[d];
       const pct = Math.round(sc / 20 * 100);
-      const cc  = catColor[cl.cat] || '#6b7280';
+      const cc  = SEL_CAT_COLOR[cl.cat] || '#6b7280';
       return `<div class="sel-gauge-item">
         <div class="sel-gauge-label">${di.label}</div>
         <div class="sel-gauge-track">

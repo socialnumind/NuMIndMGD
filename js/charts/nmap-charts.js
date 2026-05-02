@@ -18,9 +18,13 @@ function buildNMAPCharts() {
   const colors = dims.map(d => stanineColor(d.stanine));
 
   // ── 1. Radar ──
+  // Derive representative fill from average stanine so colour reflects actual zone.
   destroyChart('nmap-radar');
   const radarCtx = document.getElementById('chart-nmap-radar');
   if (radarCtx) {
+    const avgStanine     = Math.round(stanines.reduce((a, b) => a + b, 0) / stanines.length);
+    const radarBorder    = stanineColor(avgStanine);
+    const radarFill      = stanineColor(avgStanine, 0.12);
     CHARTS['nmap-radar'] = new Chart(radarCtx, {
       type: 'radar',
       data: {
@@ -28,9 +32,9 @@ function buildNMAPCharts() {
         datasets: [{
           label: 'Stanine',
           data: stanines,
-          backgroundColor: 'rgba(124,58,237,0.12)',
-          borderColor: '#7c3aed',
-          pointBackgroundColor: colors,
+          backgroundColor: radarFill,
+          borderColor: radarBorder,
+          pointBackgroundColor: colors,   // each point keeps its own stanine colour
           pointBorderColor: '#fff',
           pointRadius: 7,
           borderWidth: 2.5,
@@ -64,7 +68,7 @@ function buildNMAPCharts() {
         datasets: [{
           label: 'Stanine',
           data: stanines,
-          backgroundColor: colors.map(c => c + 'bb'),
+          backgroundColor: colors.map(c => CHART_ALPHA(c, 0.73)),
           borderColor: colors,
           borderWidth: 2, borderRadius: 8, borderSkipped: false,
         }, {

@@ -80,9 +80,14 @@ function buildCPICharts() {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: ctx => ` ${cpi.ranked.find(a=>a.abbr===ctx.label)?.label || ctx.label}: ${ctx.raw} (${ctx.parsed}%)`
-            }
-          }
+              label: ctx => {
+                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                const pct   = total > 0 ? Math.round(ctx.raw / total * 100) : 0;
+                const area  = nonZero[ctx.dataIndex];
+                return ` ${area?.label || ctx.label}: ${ctx.raw} (${pct}%)`;
+              },
+            },
+          },
         }
       }
     });

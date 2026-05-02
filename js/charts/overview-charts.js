@@ -8,7 +8,7 @@ import { CPI_AREAS } from '../engine/cpi.js';
 import { NMAP_DIMS } from '../engine/nmap.js';
 import { DAAB_SUBS } from '../engine/daab.js';
 import { SEA_DOMAINS } from '../engine/sea.js';
-import { CHARTS, destroyChart, stanineColor } from './core.js';
+import { CHARTS, destroyChart, stanineColor, CHART_ALPHA } from './core.js';
 
 function buildOverviewCharts() {
   const nmap = S.nmap.scores;
@@ -45,7 +45,7 @@ function buildOverviewCharts() {
         datasets: [{
           label: 'Stanine Score',
           data: allStanines,
-          backgroundColor: allColors.map(c => c + 'cc'),
+          backgroundColor: allColors.map(c => CHART_ALPHA(c, 0.8)),
           borderColor: allColors,
           borderWidth: 2, borderRadius: 6, borderSkipped: false,
         }, {
@@ -94,20 +94,22 @@ function buildOverviewCharts() {
         labels: radarLabels,
         datasets: [{
           label: 'Personality (Top 5)',
-          data: [...top5personality.map(d => d.stanine), ...Array(topAptitude.length).fill(0)],
+          data: [...top5personality.map(d => d.stanine), ...Array(topAptitude.length).fill(null)],
           backgroundColor: 'rgba(124,58,237,0.12)',
           borderColor: '#7c3aed',
           pointBackgroundColor: '#7c3aed',
           pointBorderColor: '#fff',
           pointRadius: 5, borderWidth: 2.5, fill: true,
+          spanGaps: false,
         }, {
           label: 'Aptitude',
-          data: [...Array(top5personality.length).fill(0), ...topAptitude.map(k => S.daab[k].scores.stanine)],
+          data: [...Array(top5personality.length).fill(null), ...topAptitude.map(k => S.daab[k].scores.stanine)],
           backgroundColor: 'rgba(245,158,11,0.1)',
           borderColor: '#f59e0b',
           pointBackgroundColor: '#f59e0b',
           pointBorderColor: '#fff',
           pointRadius: 5, borderWidth: 2.5, fill: true,
+          spanGaps: false,
         }]
       },
       options: {
