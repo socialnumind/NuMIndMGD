@@ -148,6 +148,7 @@ async function trySubmitNSEAAS() {
   }
   stopTimer(S.sea);
   S.sea.scores = ENGINE.scoreNSEAAS(S.sea.answers, S.student.gender);
+  DB.saveSection(S.sessionId, 'sea', S.sea.answers, S.sea.scores, S.sea.duration);
   await DB.markCompleted(S.sessionId);
   _saveSession('ready');
   goPage('ready');

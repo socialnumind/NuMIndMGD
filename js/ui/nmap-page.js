@@ -3,7 +3,7 @@
    NMAP page rendering, navigation, submit, timer helpers.
 ════════════════════════════════════════════════════════════════════ */
 
-import { S, saveState, _saveSession } from '../state.js';
+import { S, saveState, _saveSession, DB } from '../state.js';
 import { NMAP_DIMS, NMAP_RAW_STMTS, NMAP_QS, NMAP_PAGES, NMAP_PAGE_QS, NMAP_ENCOURAGE } from '../engine/nmap.js';
 import { ENGINE } from '../engine/scorers.js';
 import { goPage } from '../router.js';
@@ -149,6 +149,7 @@ async function trySubmitNMAP() {
   }
   stopTimer(S.nmap);
   S.nmap.scores = ENGINE.scoreNMAP(S.nmap.answers);
+  DB.saveSection(S.sessionId, 'nmap', S.nmap.answers, S.nmap.scores, S.nmap.duration);
   _saveSession('transition');
   goPage('transition');
 }

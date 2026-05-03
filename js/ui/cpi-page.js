@@ -1,4 +1,4 @@
-import { S, _saveSession } from '../state.js';
+import { S, _saveSession, DB } from '../state.js';
 import { CPI_AREAS, CPI_QS } from '../engine/cpi.js';
 import { ENGINE } from '../engine/scorers.js';
 import { goPage } from '../router.js';
@@ -155,6 +155,7 @@ function renderCPIMap() {
 function submitCPI() {
   stopTimer(S.cpi);
   S.cpi.scores = ENGINE.scoreCPI(S.cpi.answers);
+  DB.saveSection(S.sessionId, 'cpi', S.cpi.answers, S.cpi.scores, S.cpi.duration);
   goPage('transition3');
 }
 

@@ -3,7 +3,7 @@
    DAAB sub-test rendering, timers, navigation, results, AR/MA/SA renderers.
 ════════════════════════════════════════════════════════════════════ */
 
-import { S, saveState, _saveSession } from '../state.js';
+import { S, saveState, _saveSession, DB } from '../state.js';
 import { DAAB_SUBS, DAAB_KEYS, DAAB_VA_QS, DAAB_PA_QS, DAAB_NA_QS, DAAB_LSA_QS, DAAB_HMA_QS, scoreDAAB, getStanine, stanineLabel, DAAB_AR_QS, DAAB_MA_QS, DAAB_SA_ROW_IMAGES, DAAB_SA_QS } from '../engine/daab.js';
 import { goPage, PIP_IDX } from '../router.js';
 
@@ -198,6 +198,13 @@ function advanceDAABSub(key) {
 
 async function finishDAAB() {
   scoreDAAB();
+  // Save all DAAB sub-test answers + scores immediately
+  const daab = S.daab;
+  ['va','pa','na','lsa','hma','ar','ma','sa'].forEach(function(k) {
+    if (daab[k] && daab[k].scores) {
+      DB.saveSection(S.sessionId, 'daab_' + k, daab[k].answers, daab[k].scores, daab[k].duration || 0);
+    }
+  });
   _saveSession('transition2');
   goPage('transition2');
 }
