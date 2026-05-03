@@ -238,6 +238,67 @@ async function _handleSaveRegistration(req, res) {
 }
 
 /* ════════════════════════════════════════════════════════════════════
+   POST /api/save-section
+   Called after each module completes (NMAP, DAAB, CPI, SEA).
+   Saves raw answers + scores immediately so data is never lost even
+   if the student closes the browser before generating a report.
+   Body: { sessionId, moduleKey, answers, scores, duration }
+════════════════════════════════════════════════════════════════════ */
+async function _handleSaveSection(req, res) {
+  const MAX_BODY_BYTES = 256 * 1024;
+  const chunks = [];
+  let bodyBytes = 0;
+  let aborted = false;
+  req.on('data', c => {
+    if (aborted) return;
+    bodyBytes += c.length;
+    if (bodyBytes > MAX_BODY_BYTES) {
+      aborted = true;
+      if (!res.headersSent) {
+        res.writeHead(413, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Request body too large.' }));
+      }
+      req.destroy();
+      return;
+    }
+    chunks.push(c);
+  });
+  req.on('end', () => {
+    if (aborted || res.writableEnded) return;
+    let body;
+    try { body = JSON.parse(Buffer.concat(chunks).toString()); }
+    catch (_) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'Invalid JSON' }));
+    }
+    const { sessionId, moduleKey, answers, scores, duration } = body || {};
+    if (!sessionId || !moduleKey) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'Missing sessionId or moduleKey' }));
+    }
+    try {
+      _localDb.saveSection(
+        String(sessionId).slice(0, 64),
+        String(moduleKey).slice(0, 32),
+        {
+          raw_answers: answers,
+          scores:      scores,
+          duration:    typeof duration === 'number' ? duration : 0,
+        },
+      );
+      console.log(`[DB] ✅  Section saved: ${moduleKey} for ${sessionId}`);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true }));
+    } catch (err) {
+      console.error('[DB] save-section error:', err.message);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: err.message }));
+    }
+  });
+}
+
+
+/* ════════════════════════════════════════════════════════════════════
    POST /api/save-report
    Called once the AI/fallback report has rendered. Persists registration
    (idempotent), all four module assessments + scores, and the full
@@ -701,6 +762,10 @@ const server = http.createServer((req, res) => {
 
   if (req.method === 'POST' && req.url === '/api/save-registration') {
     return _handleSaveRegistration(req, res);
+  }
+
+  if (req.method === 'POST' && req.url === '/api/save-section') {
+    return _handleSaveSection(req, res);
   }
 
   if (req.method === 'POST' && req.url === '/api/save-report') {
