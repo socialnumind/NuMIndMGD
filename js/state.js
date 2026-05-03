@@ -19,7 +19,10 @@ const DB = {
     try {
       const res = await fetch('/api/save-registration', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(window._APP_TOKEN ? { 'X-App-Token': window._APP_TOKEN } : {}),
+        },
         body:    JSON.stringify({ student, sessionId }),
       });
       if (!res.ok) {
@@ -34,6 +37,27 @@ const DB = {
       console.error('[DB] saveRegistration fetch failed:', err.message);
       return { data: null, error: { message: err.message } };
     }
+  },
+
+  // Called after each module completes — saves raw answers + scores
+  // immediately so data is never lost even if report generation fails.
+  // Fire-and-forget: a save failure must never block the assessment flow.
+  saveSection(sessionId, moduleKey, answers, scores, duration) {
+    if (!sessionId) { console.warn('[DB] saveSection: no sessionId'); return; }
+    const APP_TOKEN = (typeof window !== 'undefined' && window._APP_TOKEN) ? window._APP_TOKEN : '';
+    fetch('/api/save-section', {
+      method:  'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(APP_TOKEN ? { 'X-App-Token': APP_TOKEN } : {}),
+      },
+      body: JSON.stringify({ sessionId, moduleKey, answers, scores, duration }),
+    })
+      .then(r => {
+        if (!r.ok) r.text().then(t => console.warn('[DB] saveSection HTTP ' + r.status + ':', t));
+        else console.log('[DB] Section saved:', moduleKey, sessionId);
+      })
+      .catch(e => console.warn('[DB] saveSection fetch failed:', e.message));
   },
 
   // Kept as a stub for callers that still invoke it. Completion is now
