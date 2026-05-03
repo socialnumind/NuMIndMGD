@@ -19,10 +19,7 @@ const DB = {
     try {
       const res = await fetch('/api/save-registration', {
         method:  'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(window._APP_TOKEN ? { 'X-App-Token': window._APP_TOKEN } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ student, sessionId }),
       });
       if (!res.ok) {
