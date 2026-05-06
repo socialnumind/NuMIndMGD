@@ -247,7 +247,7 @@ async function downloadPDF() {
     const NMAP_TITLES_FALLBACK = [
       'Leadership & Motivation','Assertiveness','Cautiousness','Adaptability & Flexibility',
       'Ethical Awareness','Creativity & Innovation','Curiosity & Learning','Discipline & Sincerity',
-      'Patience & Resilience','Emotional Intelligence',
+      'Patience & Resilience',
     ];
     const nmapTitleAt = (i) => {
       try {
@@ -296,7 +296,7 @@ async function downloadPDF() {
     // Re-order to match the template's natural visual order: Verbal, Perceptual,
     // Numerical, Spatial, Mechanical, Abstract, Legal, Health/Medical
     const APT_DISPLAY_ORDER = ['va', 'pa', 'na', 'sa', 'ma', 'ar', 'lsa', 'hma'];
-    aptitude8 = APT_DISPLAY_ORDER.map(k => aptitude8.find(a => a.key === k));
+    aptitude8 = APT_DISPLAY_ORDER.map(k => aptitude8.find(a => a.key === k) || { name: DAAB_TEMPLATE_LABELS[k] || k, stanine: 5, label: stanineBand(5), key: k });
 
     const aptStrong   = aptitude8.filter(a => a.stanine >= 7).map(a => a.name);
     const aptEmerging = aptitude8.filter(a => a.stanine >= 4 && a.stanine <= 6).map(a => a.name);
@@ -423,7 +423,7 @@ async function downloadPDF() {
     txt('Built from 4 evidence-based assessments and AI-powered insights', W / 2, 185, { size: 8, color: '#E9D5FF', align: 'center' });
 
     txt('The Four Dimensions Shaping Your Profile', 14, 200, { size: 9, color: '#D8B4FE' });
-    ['NMAP', 'NAAB', 'NCPI', 'NSEAA'].forEach((p, i) => {
+    ['NMAP', 'DAAB', 'NCPI', 'NSEAA'].forEach((p, i) => {
       const px = 14 + i * 47;
       setFill(WHITE); doc.roundedRect(px, 205, 43, 18, 3, 3, 'F');
       txt(p, px + 21, 216, { size: 10, color: PURPLE, bold: true, align: 'center' });
@@ -472,7 +472,7 @@ async function downloadPDF() {
 
     const pillarData = [
       { code:'NMAP',  title:'NuMind Multidimensional Assessment of Personality', sub:'Understanding who you are at your core', body:'Evaluates ' + NMAP_DIM_COUNT + ' key personality dimensions that influence how you think, behave, and grow.', border:PURPLE },
-      { code:'NAAB',  title:'NuMind Aptitude & Ability Battery',                 sub:'Discovering what you can do',            body:'Measures 8 essential cognitive abilities — verbal, numerical, spatial, abstract reasoning and more.', border:PURPLE_LIGHT },
+      { code:'DAAB',  title:'NuMind Aptitude & Ability Battery',                 sub:'Discovering what you can do',            body:'Measures 8 essential cognitive abilities — verbal, numerical, spatial, abstract reasoning and more.', border:PURPLE_LIGHT },
       { code:'NCPI',  title:'NuMind Career Preference Inventory',                sub:'Identifying what you enjoy',             body:'Maps career interests across 10 domains to uncover environments and roles aligned with your preferences.', border:TEAL },
       { code:'NSEAA', title:'NuMind Social Emotional & Academic Adjustment',     sub:'Preparing you to thrive',                body:'Assesses emotional, social, and academic readiness ensuring long-term success and wellbeing.', border:YELLOW },
     ];
@@ -678,7 +678,6 @@ async function downloadPDF() {
       'Curiosity & Learning':       'Interest in exploring and engaging with new knowledge. Influences motivation for learning and growth.',
       'Discipline & Sincerity':     'Consistency, responsibility and commitment to tasks. Supports organisation and follow-through.',
       'Patience & Resilience':      'Emotional steadiness and ability to cope with setbacks. Influences how a student manages challenges over time.',
-      'Emotional Intelligence':     'Capacity to recognize, understand, and manage emotions in self and others. Supports empathy, communication, and interpersonal effectiveness.',
     };
     // pre-compute each card height so we can use row max
     const traitCardH = personality9.map((d, i) => {
