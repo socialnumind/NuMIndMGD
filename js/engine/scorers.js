@@ -70,7 +70,10 @@ const ENGINE = {
       const raw = dimScores[i];
       const pct = Math.round(raw / 14 * 100);
       const entry = stanineTable.find(r => pct <= r.maxPct) || stanineTable[8];
-      return { ...d, raw, pct, stanine: entry.stanine, label: entry.label, cls: entry.cls };
+      // Preserve dim title as 'name' explicitly — spreading d then overwriting
+      // 'label' with the stanine band would otherwise destroy the trait title,
+      // leaving downstream consumers (download.js) with no way to recover it.
+      return { ...d, name: d.label, raw, pct, stanine: entry.stanine, label: entry.label, cls: entry.cls };
     });
     const sorted = [...dims].sort((a, b) => b.stanine - a.stanine);
     return { dims, sorted, dimScores };
