@@ -177,7 +177,11 @@ async function downloadPDF() {
     const daab = (typeof S !== 'undefined' && S && S.daab) ? S.daab : null;
     const cpi  = (typeof S !== 'undefined' && S && S.cpi && S.cpi.scores) ? S.cpi.scores : { ranked: [], top3: [] };
     const sea  = (typeof S !== 'undefined' && S && S.sea && S.sea.scores) ? S.sea.scores : { domScores: { E:0, S:0, A:0 }, cls: {} };
-    const ai   = window._lastAIReport || {};
+    // Snapshot the AI report once so every subsequent read in this render
+    // is guaranteed to be consistent — avoids race conditions where
+    // window._lastAIReport changes mid-generation.
+    const ai   = (window._lastAIReport && typeof window._lastAIReport === 'object')
+                 ? Object.assign({}, window._lastAIReport) : {};
 
     // ── AI prose helpers ──────────────────────────────────────────
     // The AI generator produces 8 fields. These helpers safely consume
@@ -243,7 +247,7 @@ async function downloadPDF() {
     const NMAP_TITLES_FALLBACK = [
       'Leadership & Motivation','Assertiveness','Cautiousness','Adaptability & Flexibility',
       'Ethical Awareness','Creativity & Innovation','Curiosity & Learning','Discipline & Sincerity',
-      'Patience & Resilience',
+      'Patience & Resilience','Emotional Intelligence',
     ];
     const nmapTitleAt = (i) => {
       try {
@@ -251,20 +255,22 @@ async function downloadPDF() {
       } catch (e) {}
       return NMAP_TITLES_FALLBACK[i] || ('Dimension ' + (i + 1));
     };
-    const personality9 = (nmap.dims && nmap.dims.length ? nmap.dims : [
-      {}, {}, {}, {}, {}, {}, {}, {}, {},
-    ]).slice(0, 9).map((d, i) => {
-      const stn = d.stanine || 5;
-      // Prefer explicit name if a future scorer provides one; otherwise positional NMAP_DIMS title.
-      const title = d.name || nmapTitleAt(i);
-      return { name: title, stanine: stn, label: stanineBand(stn) };
-    });
-    while (personality9.length < 9) {
-      const i = personality9.length;
-      personality9.push({ name: nmapTitleAt(i), stanine: 5, label: stanineBand(5) });
+    // Detect actual number of dims from live data (supports 9 or 10).
+    const NMAP_DIM_COUNT = (nmap.dims && nmap.dims.length >= 10) ? 10 : 9;
+    const personalityAll = (nmap.dims && nmap.dims.length ? nmap.dims : new Array(NMAP_DIM_COUNT).fill({}))
+      .slice(0, NMAP_DIM_COUNT).map((d, i) => {
+        const stn = d.stanine || 5;
+        const title = d.name || nmapTitleAt(i);
+        return { name: title, stanine: stn, label: stanineBand(stn) };
+      });
+    while (personalityAll.length < NMAP_DIM_COUNT) {
+      const i = personalityAll.length;
+      personalityAll.push({ name: nmapTitleAt(i), stanine: 5, label: stanineBand(5) });
     }
+    // Keep backward-compat alias used elsewhere in the file.
+    const personality9 = personalityAll;
 
-    const topPersonality = personality9.slice().sort((a,b) => b.stanine - a.stanine).slice(0, 3);
+    const topPersonality = personalityAll.slice().sort((a,b) => b.stanine - a.stanine).slice(0, 3);
 
     // ── 8 aptitude domains (live) ─────────────────────────────────
     // Real shape: S.daab is an object keyed by sub-test code (va, pa, na,
@@ -295,17 +301,19 @@ async function downloadPDF() {
     const aptStrong   = aptitude8.filter(a => a.stanine >= 7).map(a => a.name);
     const aptEmerging = aptitude8.filter(a => a.stanine >= 4 && a.stanine <= 6).map(a => a.name);
 
-    // ── Career interest (top 8) ──────────────────────────────────
-    // Template display order for career interest bars (matches template PDF)
+    // ── Career interest (all 10) ─────────────────────────────────
+    // Template display order for career interest bars (matches CPI_AREAS in cpi.js)
     const CPI_DISPLAY_ORDER = [
-      'Sports & Physical Perf.',
-      'People & Service',
-      'Creative Design & Perf. Arts',
       'Science & Technology',
       'Health & Medical Science',
-      'Legal & Judiciary',
       'Language & Communication',
+      'Creative Design & Perf. Arts',
+      'Legal & Judiciary',
       'Administration & Governance',
+      'Education & Research',
+      'Business & Entrepreneurship',
+      'People & Service',
+      'Sports & Physical Perf.',
     ];
     const cpiAll = (cpi.ranked && cpi.ranked.length ? cpi.ranked : []).map(r => ({
       label: r.label || r.name || '',
@@ -317,7 +325,9 @@ async function downloadPDF() {
     cpiAll.forEach(r => { cpiByLabel[r.label] = r; });
     const careers8 = CPI_DISPLAY_ORDER.map(lbl => cpiByLabel[lbl] || { label: lbl, score: 0, level: 'Low' });
     const cpiColor = (lvl) => lvl === 'Strong' ? PURPLE : lvl === 'Moderate' ? PURPLE_LIGHT : PINK;
-    const top3 = (cpi.top3 && cpi.top3.length >= 3 ? cpi.top3 : cpiAll.slice().sort((a,b) => b.score - a.score).slice(0, 3));
+    // top3 — always derive from live cpiAll so labels always match CPI_AREAS.
+    // S.cpi.top3 may be stale (8-area data) so we ignore it and sort fresh.
+    const top3 = cpiAll.slice().sort((a, b) => b.score - a.score).slice(0, 3);
 
     // ── SEAA cards (live) ────────────────────────────────────────
     const seaCat = (cat) => {
@@ -461,7 +471,7 @@ async function downloadPDF() {
     });
 
     const pillarData = [
-      { code:'NMAP',  title:'NuMind Multidimensional Assessment of Personality', sub:'Understanding who you are at your core', body:'Evaluates 9 key personality dimensions that influence how you think, behave, and grow.', border:PURPLE },
+      { code:'NMAP',  title:'NuMind Multidimensional Assessment of Personality', sub:'Understanding who you are at your core', body:'Evaluates ' + NMAP_DIM_COUNT + ' key personality dimensions that influence how you think, behave, and grow.', border:PURPLE },
       { code:'NAAB',  title:'NuMind Aptitude & Ability Battery',                 sub:'Discovering what you can do',            body:'Measures 8 essential cognitive abilities — verbal, numerical, spatial, abstract reasoning and more.', border:PURPLE_LIGHT },
       { code:'NCPI',  title:'NuMind Career Preference Inventory',                sub:'Identifying what you enjoy',             body:'Maps career interests across 10 domains to uncover environments and roles aligned with your preferences.', border:TEAL },
       { code:'NSEAA', title:'NuMind Social Emotional & Academic Adjustment',     sub:'Preparing you to thrive',                body:'Assesses emotional, social, and academic readiness ensuring long-term success and wellbeing.', border:YELLOW },
@@ -534,7 +544,7 @@ async function downloadPDF() {
     const statusBorder = (s) => s === 'Strength' ? PURPLE : s === 'Developing' ? TEAL : YELLOW;
 
     const snapCards = [
-      { title:'Personality',     status: persStatus, note: topPersonality.length ? 'Dominant: ' + topPersonality.slice(0,2).map(t => t.name).join(', ') : 'Personality profile across 9 dimensions.' },
+      { title:'Personality',     status: persStatus, note: topPersonality.length ? 'Dominant: ' + topPersonality.slice(0,2).map(t => t.name).join(', ') : 'Personality profile across ' + NMAP_DIM_COUNT + ' dimensions.' },
       { title:'Aptitude',        status: aptStatus,  note: aptStrong.length ? 'Strong areas: ' + aptStrong.slice(0,2).join(', ') : 'Aptitude profile across 8 ability domains.' },
       { title:'Career Interest', status: cpiStatus,  note: top3[0] ? 'Top interest: ' + top3[0].label + ' (' + top3[0].score + '/20)' : 'Career interest mapped across domains.' },
       { title:'SEAA Readiness',  status: seaWorst,   note: seaCards.map(c => c.title.split(' ')[0] + ': ' + c.score + '/20').join(' · ') },
@@ -606,7 +616,7 @@ async function downloadPDF() {
        PAGE 4 — PERSONALITY PROFILE
     ═══════════════════════════════════════════════ */
     doc.addPage();
-    sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+    sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across ' + NMAP_DIM_COUNT + ' important personality traits and how they may relate to personal growth and career fit');
     studentBar(20);
     cy = 32;
 
@@ -616,14 +626,15 @@ async function downloadPDF() {
     setFill(PINK);         doc.circle(92, cy + 3.5, 2.5, 'F'); txt('Needs Attention', 96, cy + 5, { size: 7.5, color: '#1F2937' });
     cy += 11;
 
-    rect(10, cy, W - 20, 62, '#FAFAFA', '#E5E7EB', 2);
-    txt('Personality Stanine Scores — 9 Dimensions', 14, cy + 6, { size: 8, color: GRAY, bold: true });
+    const persChartH = 8 + personality9.length * 5.5 + 4;
+    rect(10, cy, W - 20, persChartH, '#FAFAFA', '#E5E7EB', 2);
+    txt('Personality Stanine Scores — ' + personality9.length + ' Dimensions', 14, cy + 6, { size: 8, color: GRAY, bold: true });
     personality9.forEach((d, i) => stanineBar(d.name, d.stanine, cy + 14 + i * 5.5, stanineColor(d.stanine)));
     for (let i = 1; i <= 9; i++) {
       const bx = 70 + ((i - 1) / 8) * (W - 90);
-      txt(String(i), bx, cy + 64, { size: 6, color: GRAY, align: 'center' });
+      txt(String(i), bx, cy + persChartH + 2, { size: 6, color: GRAY, align: 'center' });
     }
-    cy += 68;
+    cy += persChartH + 6;
 
     const pgText = 'Graphical interpretations are based on the Stanine (Standard Nine) Scale, where scores are reported across a 1–9 range, with 1–3 = Needs attention, 4–6 = Developing, and 7–9 = Strength.';
     cy = drawBox(cy, {
@@ -667,12 +678,14 @@ async function downloadPDF() {
       'Curiosity & Learning':       'Interest in exploring and engaging with new knowledge. Influences motivation for learning and growth.',
       'Discipline & Sincerity':     'Consistency, responsibility and commitment to tasks. Supports organisation and follow-through.',
       'Patience & Resilience':      'Emotional steadiness and ability to cope with setbacks. Influences how a student manages challenges over time.',
+      'Emotional Intelligence':     'Capacity to recognize, understand, and manage emotions in self and others. Supports empathy, communication, and interpersonal effectiveness.',
     };
     // pre-compute each card height so we can use row max
-    const traitCardH = personality9.map((d) => {
+    const traitCardH = personality9.map((d, i) => {
+      const isLastAlone = (personality9.length % 2 === 1) && (i === personality9.length - 1);
       const desc = traitDescs[d.name] || (d.name + ' — score ' + d.stanine + '/9 (' + stanineBand(d.stanine) + ').');
       doc.setFontSize(6.5); doc.setFont('helvetica', 'normal');
-      const dL = doc.splitTextToSize(desc, 83);
+      const dL = doc.splitTextToSize(desc, isLastAlone ? W - 24 : 83);
       return 11 + dL.length * 4;
     });
     let traitCy = cy;
@@ -686,7 +699,7 @@ async function downloadPDF() {
         // page break if this row won't fit
         if (traitCy + rowMax > H - 14) {
           doc.addPage();
-          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across ' + NMAP_DIM_COUNT + ' important personality traits and how they may relate to personal growth and career fit');
           studentBar(20);
           traitCy = 32;
         }
@@ -694,12 +707,12 @@ async function downloadPDF() {
       }
       const desc = traitDescs[d.name] || (d.name + ' — score ' + d.stanine + '/9 (' + stanineBand(d.stanine) + ').');
       doc.setFontSize(6.5); doc.setFont('helvetica', 'normal');
-      const dL = doc.splitTextToSize(desc, col === 0 && i === personality9.length - 1 ? W - 24 : 83);
-      // Last card with no right-side partner → span full width
-      const isLastAlone = col === 0 && i === personality9.length - 1;
+      // Last card is "alone" (full width) only when dim count is odd and this is the final card.
+      const isLastAlone = (personality9.length % 2 === 1) && (i === personality9.length - 1);
+      const dL = doc.splitTextToSize(desc, isLastAlone ? W - 24 : 83);
       const cardW = isLastAlone ? W - 20 : 93;
       rect(px, traitCy, cardW, rowMax, '#F0F9FF', '#BAE6FD', 2);
-      txt('0' + (i + 1), px + 5, traitCy + 7, { size: 8, color: PURPLE_LIGHT, bold: true });
+      txt((i + 1) < 10 ? '0' + (i + 1) : String(i + 1), px + 5, traitCy + 7, { size: 8, color: PURPLE_LIGHT, bold: true });
       txt(d.name, px + 14, traitCy + 7, { size: 8, color: '#1F2937', bold: true, maxWidth: isLastAlone ? W - 34 : 75 });
       txt(dL.join('\n'), px + 5, traitCy + 13, { size: 6.5, color: GRAY });
     });
@@ -711,7 +724,7 @@ async function downloadPDF() {
       // Only break page if not enough room for header + at least 2 lines
       if (cy + 22 > H - 16) {
         doc.addPage();
-        sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+        sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across ' + NMAP_DIM_COUNT + ' important personality traits and how they may relate to personal growth and career fit');
         studentBar(20);
         cy = 32;
       }
@@ -723,7 +736,7 @@ async function downloadPDF() {
         size: 7.5, color: '#374151', lineH: 4.2, paraGap: 3,
         maxW: W - 28, x: 14, bottom: H - 16, pageStart: 32,
         onNewPage: function () {
-          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across ' + NMAP_DIM_COUNT + ' important personality traits and how they may relate to personal growth and career fit');
           studentBar(20);
         },
       });
@@ -733,7 +746,7 @@ async function downloadPDF() {
       if (persWeak2.length) {
         if (cy + 30 > H - 16) {
           doc.addPage();
-          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across 9 important personality traits and how they may relate to personal growth and career fit');
+          sectionHeader('Personality Profile', 'The Personality Graph highlights your strengths across ' + NMAP_DIM_COUNT + ' important personality traits and how they may relate to personal growth and career fit');
           studentBar(20);
           cy = 32;
         }
@@ -747,6 +760,7 @@ async function downloadPDF() {
           'Curiosity & Learning':       'Read across diverse topics and ask questions about how things work.',
           'Discipline & Sincerity':     'Use a planner and set small daily goals to build consistency.',
           'Patience & Resilience':      'Practice mindfulness and journaling to build emotional steadiness.',
+          'Emotional Intelligence':     'Practice active listening, empathy exercises, and reflective journaling to strengthen emotional awareness.',
         };
         const suggH = 12 + persWeak2.length * 5;
         rect(10, cy, W - 20, suggH, '#EFF6FF', '#BFDBFE', 2);
@@ -768,6 +782,7 @@ async function downloadPDF() {
         'Curiosity & Learning':       'Read across diverse topics and ask questions about how things work.',
         'Discipline & Sincerity':     'Use a planner and set small daily goals to build consistency.',
         'Patience & Resilience':      'Practice mindfulness and journaling to build emotional steadiness.',
+        'Emotional Intelligence':     'Practice active listening, empathy exercises, and reflective journaling to strengthen emotional awareness.',
       };
       // compute actual height
       doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
@@ -951,7 +966,7 @@ async function downloadPDF() {
     setFill(PINK);         doc.circle(100, cy + 3.5, 2.5, 'F'); txt('Low Interest',     104, cy + 5, { size: 7.5, color: '#1F2937' });
     cy += 11;
 
-    rect(10, cy, W - 20, 60, '#FAFAFA', '#E5E7EB', 2);
+    rect(10, cy, W - 20, 76, '#FAFAFA', '#E5E7EB', 2);
     txt('Career Interest Ranking — Score out of 20 per domain', 14, cy + 6, { size: 8, color: GRAY, bold: true });
     const barX2 = 70, barW2 = W - barX2 - 20;
     careers8.forEach((c, i) => {
@@ -963,9 +978,9 @@ async function downloadPDF() {
     });
     for (let i = 0; i <= 20; i += 2) {
       const bx = barX2 + (i / 20) * barW2;
-      txt(String(i), bx, cy + 62, { size: 5.5, color: GRAY, align: 'center' });
+      txt(String(i), bx, cy + 78, { size: 5.5, color: GRAY, align: 'center' });
     }
-    cy += 67;
+    cy += 83;
 
     const cpiGNote = "Scores in the Career Interest graph represent raw scores (0–20 scale) and reflect the student's relative interest levels across assessed career areas where 0-7 indicates Low Interest Area; 8-14 indicates Moderate Interest Area; 15-20 indicates Strong Interest Area.";
     cy = drawBox(cy, {
@@ -1299,7 +1314,7 @@ async function downloadPDF() {
     };
     const pathwayDefaults = { apt:'Verbal Ability', pers:'Discipline & Sincerity', sea:'A' };
 
-    const top4Pathways = (cpiAll.slice(0, 4).length === 4 ? cpiAll.slice(0, 4) : top3.concat(cpiAll).slice(0, 4));
+    const top4Pathways = cpiAll.slice().sort((a, b) => b.score - a.score).slice(0, 4);
     const pathwayGaps = top4Pathways.map((p, idx) => {
       const m = pathwayMappings[p.label] || pathwayDefaults;
       const aptD = findApt(m.apt); const persD = findPers(m.pers);
@@ -1422,7 +1437,7 @@ async function downloadPDF() {
         return [careerName, interest, aptL, persL, seaL, align, pct, r.cluster || '', r.rationale || ''];
       });
     } else {
-      const top6 = cpiAll.slice(0, 6);
+      const top6 = cpiAll.slice().sort((a, b) => b.score - a.score).slice(0, 6);
       matrixRowsLive = top6.map((p) => {
         const m = pathwayMappings[p.label] || pathwayDefaults;
         const aptStn  = findApt(m.apt).stanine;
@@ -1468,10 +1483,24 @@ async function downloadPDF() {
     const strongFits   = matrixRowsLive.filter(r => r[5].indexOf('Strong') >= 0).map(r => r[0]);
     const emergingFits = matrixRowsLive.filter(r => r[5].indexOf('Emerging') >= 0).map(r => r[0]);
     const exploratory  = matrixRowsLive.filter(r => r[5].indexOf('Exploratory') >= 0).map(r => r[0]);
+
+    // If no rows fell into Emerging (common in the score-driven fallback when
+    // scores cluster at Strong or Exploratory), populate Emerging from rows
+    // whose suitability_pct is nearest the 65–79 band, or fall back to the
+    // next-best Strong/Exploratory rows so the box is never left empty.
+    const emergingFitsDisplay = emergingFits.length
+      ? emergingFits
+      : (() => {
+          // Sort by pct descending; pick rows that didn't make Strong
+          const nonStrong = matrixRowsLive.filter(r => r[5].indexOf('Strong') < 0);
+          if (nonStrong.length) return nonStrong.slice(0, 2).map(r => r[0]);
+          // All are Strong — show the weakest strong rows as emerging candidates
+          return matrixRowsLive.slice().sort((a, b) => a[6] - b[6]).slice(0, 2).map(r => r[0]);
+        })();
     const fitBoxes = [
-      { title:'Strong Fit Pathways',    color: PURPLE,       bg:'#F5F3FF', items: strongFits   },
-      { title:'Emerging Fit Pathways',  color: PURPLE_LIGHT, bg:'#EDE9FE', items: emergingFits },
-      { title:'Exploratory Pathways',   color: GRAY,         bg: LIGHT_GRAY, items: exploratory },
+      { title:'Strong Fit Pathways',    color: PURPLE,       bg:'#F5F3FF',   items: strongFits          },
+      { title:'Emerging Fit Pathways',  color: PURPLE_LIGHT, bg:'#EDE9FE',   items: emergingFitsDisplay },
+      { title:'Exploratory Pathways',   color: GRAY,         bg: LIGHT_GRAY, items: exploratory         },
     ];
     fitBoxes.forEach((fb, i) => {
       const px = 10 + i * 66;
@@ -1524,8 +1553,8 @@ async function downloadPDF() {
         'People & Service':             'Humanities + Psychology + Sociology',
         'Sports & Physical Perf.':      'PE + Biology + Psychology',
       };
-      const recPrimary = (strongFits[0] || emergingFits[0] || (top3[0] && top3[0].label) || 'Multidisciplinary');
-      const recAlt     = (strongFits[1] || emergingFits[0] || (top3[1] && top3[1].label) || 'Multidisciplinary');
+      const recPrimary = (strongFits[0] || emergingFitsDisplay[0] || (top3[0] && top3[0].label) || 'Multidisciplinary');
+      const recAlt     = (strongFits[1] || emergingFitsDisplay[0] || (top3[1] && top3[1].label) || 'Multidisciplinary');
       const recExpl    = (exploratory[0] || (top3[2] && top3[2].label) || 'Multidisciplinary');
       const pathways = [
         { num:'01', fit:'Strong Fit',      type:'(Primary Pathway)',  subject: subjectMap[recPrimary] || 'Multidisciplinary stream', desc:'Highest alignment with your assessed strengths and top fit pathway: ' + recPrimary + '.', color: PURPLE },
